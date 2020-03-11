@@ -4,6 +4,7 @@ CREATE TABLE issues (
   id SERIAL PRIMARY KEY NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
-  author_id INT REFERENCES users(id),
-  created_at TIMESTAMP
+  project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+  author_id INT REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW()
 );

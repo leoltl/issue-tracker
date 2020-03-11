@@ -1,10 +1,11 @@
-import ProjectService from "../services/projects.service";
+import IssueService from "../services/issues.service";
 import { Request, Response, NextFunction, Router, Error } from "express";
 
-class ProjectController {
+class IssueController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await (new ProjectService()).findAll();
+      const { projectId } = req.params
+      const result = await (new IssueService()).findAllByProjectId(projectId);
       res.send(result);
     } catch (e) {
       next(e)
@@ -13,8 +14,8 @@ class ProjectController {
 
   async get(req: Request, res: Response, next: NextFunction) {
     try {
-      const { projectId } = req.params
-      const result = await (new ProjectService()).findById(projectId);
+      const { issueId } = req.params
+      const result = await (new IssueService()).findById(issueId);
       res.send(result);
     } catch (e) {
       next(e)
@@ -22,9 +23,9 @@ class ProjectController {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
-    const project = req.body;
+    const issue = { ...req.body, projectId: Number(req.params.id) };
     try {
-      const result = await (new ProjectService(project)).create(project);
+      const result = await (new IssueService()).create(issue);
       res.send(result)
     } catch (e) {
       next(e)
@@ -32,10 +33,10 @@ class ProjectController {
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
-    const { projectId } = req.params
-    const project = {name: req.body.name, projectId};
+    const id = Number(req.params.id)
+    const issue = { ...req.body, id };
     try {
-      const result = await (new ProjectService(project)).update(project, Number(projectId));
+      const result = await (new IssueService()).update(issue, id);
       res.send(result)
     } catch (e) {
       next(e)
@@ -43,5 +44,5 @@ class ProjectController {
   }
 }
 
-const controller = new ProjectController()
+const controller = new IssueController()
 export default controller;

@@ -21,17 +21,18 @@ class Project extends base_1.default {
     async create(project) {
         if (!this.validate(project, ["name"]))
             throw new httpErrors_1.HTTP400Error("Value provide is not valid");
-        var [columns, values, params] = this.parseColumnForCreate(project);
-        const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params})`, values);
+        var [columns, values, params] = this.parseColumnForCreateUpdate(project);
+        const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values);
         return result;
     }
-    async update(project) {
+    async update(project, id) {
         if (!this.validate(project, ["name", "id"]))
             throw new httpErrors_1.HTTP400Error("Value provide is not valid");
-        const result = await this.pool.query(`UPDATE ${this.table} SET name = $1 WHERE id = $2`, [project.name, project.id]);
+        await this.findById(id);
+        var [columns, values, params] = this.parseColumnForCreateUpdate(project);
+        const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`;
+        const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values);
         return result;
-    }
-    async destroy(id) {
     }
 }
 exports.default = Project;

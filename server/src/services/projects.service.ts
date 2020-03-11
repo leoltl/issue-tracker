@@ -20,13 +20,17 @@ class Project extends ProjectModel {
     return super.create(project);
   }
   
-  public async update(project: project) {
+  public async update(project: project, id: number) {
     this.isValid(project);
-    return super.update(project);
+    return super.update(project, id);
   }
 
   public async findAll() {
     return super.findAll();
+  }
+
+  public async findById(projectId: number) {
+    return super.findById(projectId);
   }
 }
 

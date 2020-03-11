@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import { dbParams } from './config-vars';
+import { HTTP400Error } from './httpErrors';
 
 interface iDB {
   getInstance(): void;
@@ -11,7 +12,7 @@ class DB implements iDB{
     this.pool = null
   }
 
-  async query(query: String, params?: Array<any>): Promise<Array<any> | any> {
+  async query(query: string, params?: Array<any>): Promise<Array<any> | any> {
     const res = await this.pool.query(query, params)
     return res.rows.length > 1 ? res.rows : res.rows[0]
   } 

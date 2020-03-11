@@ -1,5 +1,4 @@
 import Model from "./base";
-import pool from "../lib/database";
 import { HTTP400Error } from '../lib/httpErrors'
 
 interface issue {
@@ -7,9 +6,10 @@ interface issue {
   id?: Number,
   description: String,
   authorId: Number,
+  projectId: Number,
 }
 
-class Project extends Model {
+class Issue extends Model {
   constructor() {
     const columns = {
       title: {
@@ -23,33 +23,41 @@ class Project extends Model {
       },
       description: {
         colName: "description",
-        validator: (val) => typeof val == "string",
+        validator: (val) => val && typeof val == "string" || true,
       },
       authorId: {
         colName: "author_id",
         validator: (val) => val && typeof val == "number",
       },
+      projectId: {
+        colName: "project_id",
+        validator: (val) => val && typeof val == "number",
+      }
     }
-    super({ table: "projects", columns })
+    super({ table: "issues", columns })
   }
 
-  async create(issue: issue) {
-    if (!this.validate(issue, ["title", "description", "authorId"])) throw new HTTP400Error("Value provide is not valid")
-    var [ columns, values, params ] = this.parseColumnForCreate(issue);
-    const result = await pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params})`, values)
+  protected async create(issue: issue) {
+    if (!this.validate(issue, ["title", "description", "authorId", "projectId"])) throw new HTTP400Error("Value provide is not valid")
+    //TODO: check valid issue author
+    var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
+    const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
     return result
   }
 
-  async update(project: issue) {
-    if (!this.validate(project, ["name", "id"])) throw new HTTP400Error("Value provide is not valid")
-    const result = await pool.query(`UPDATE ${this.table} SET name = $1 WHERE id = $2`, [project, project.id])
+  protected async update(issue: issue, id) {
+    if (!this.validate(issue, ["title", "description", "authorId", "projectId"])) throw new HTTP400Error("Value provide is not valid")
+    await this.findById(id)
+    const result = await this.pool.query(`UPDATE ${this.table} SET name = $1 WHERE id = $2`, [issue, issue.id])
     return result
   }
 
-  async destroy(id: Number){
-    
+  protected async findAllByProjectId(projectId: number) {
+    const result = await this.pool.query(`SELECT * from ${this.table} WHERE project_id = $1`, [projectId])
+    if (!result) throw new HTTP400Error("Record not found")
+    return result
   }
 
 }
 
-export default Project;
+export default Issue;

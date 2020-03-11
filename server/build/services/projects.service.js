@@ -15,12 +15,15 @@ class Project extends projects_model_1.default {
         this.isValid(project);
         return super.create(project);
     }
-    async update(project) {
+    async update(project, id) {
         this.isValid(project);
-        return super.update(project);
+        return super.update(project, id);
     }
     async findAll() {
         return super.findAll();
+    }
+    async findById(projectId) {
+        return super.findById(projectId);
     }
 }
 exports.default = Project;
