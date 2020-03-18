@@ -7,6 +7,7 @@ interface issue {
   description: String,
   authorId: Number,
   projectId: Number,
+  createdAt: String,
 }
 
 class Issue extends IssueModel {

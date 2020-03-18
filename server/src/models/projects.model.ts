@@ -16,7 +16,8 @@ class Project extends Model {
       id: {
         colName: "id",
         validator: (val) => val && typeof val == "number",
-        isPrimaryKey: true
+        isPrimaryKey: true,
+        protected: true,
       }
     }
     super({ table: "projects", columns })

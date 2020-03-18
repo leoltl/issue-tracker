@@ -7,6 +7,7 @@ interface Column {
   validator: Validator;
   required?: boolean;
   isPrimaryKey?: boolean;
+  protected?: boolean;
 }
 
 interface modelProperty {
@@ -37,7 +38,7 @@ abstract class Model {
 
   protected validate(obj: any, columns: Array<string>): boolean {
     return columns.every(column => {
-      console.log(column, this.columns[column])
+      // console.log(column, this.columns[column])
       return this.columns[column].validator(obj[column])
     })
   }
@@ -47,29 +48,30 @@ abstract class Model {
     if (keyValuePairs.length == 0) throw new HTTP400Error("Missing value in object creation")
     var [columns, values, params] = keyValuePairs.reduce(
       ([cols, vals, parms]: [Array<string>, Array<string>, Array<string>], [column, value]: [string, string], i: number)  => {
-        if (this.columns[column].isPrimaryKey) return [cols, vals, parms]
+        if (this.columns[column].isPrimaryKey) return [cols, vals, parms] // skip prop if primary key
         return [[...cols, this.columns[column].colName], [...vals, value], [...parms, `$${i+1}`]]
     }, [[], [], []])  
-    console.log(columns, values, params)
+    // console.log(columns, values, params)
     return [columns.join(), values, params.join()]
   }
 
   protected async findAll(): Promise<Array<any> | any> {
     const result = await pool.query(`SELECT * FROM ${this.table}`)
     if (!result) throw new HTTP400Error("Record not found")
-    return result
+    return this._filterProtectedFields(result)
   }
 
   protected async findById(id: Number): Promise<Array<any> | any> {
     if (!id) throw new HTTP400Error("ID is not provided")
     const result = await pool.query(`SELECT * FROM ${this.table} WHERE id = $1`, [id])
     if (!result) throw new HTTP400Error("Record not found")
-    return result
+    return this._filterProtectedFields(result)
   }
 
   protected async destroy(id: Number): Promise<Array<any> | any> {
     if (!id) throw new HTTP400Error("ID is not provided")
     await this.findById(id)
+    // Destory Query TODO:
     const result = await pool.query(`SELECT * FROM ${this.table} WHERE id = $1`, [id])
     return result
   }
@@ -77,6 +79,20 @@ abstract class Model {
   protected abstract create(obj: any): Promise<Array<any> | any>
 
   protected abstract update(obj: any, id: Number): Promise<Array<any> | any>
+
+
+  protected _filterProtectedFields(records: Array<any> | any) {
+    const safeRecords = records.map(record => {
+      const safeRecord = {}
+      Object.keys(record).forEach(key => {
+        console.log(key)
+        if (this.columns[key].protected == true) return
+        safeRecord[key] = record[key]
+      })
+      return safeRecord;
+    })
+    return safeRecords.length > 1 ? safeRecords : safeRecords[0]
+  }
 
 }
 

@@ -7,6 +7,7 @@ interface issue {
   description: String,
   authorId: Number,
   projectId: Number,
+  createdAt: String,
 }
 
 class Issue extends Model {
@@ -19,7 +20,8 @@ class Issue extends Model {
       id: {
         colName: "id",
         validator: (val) => val && typeof val == "number",
-        isPrimaryKey: true
+        isPrimaryKey: true,
+        protected: true,
       },
       description: {
         colName: "description",
@@ -32,6 +34,11 @@ class Issue extends Model {
       projectId: {
         colName: "project_id",
         validator: (val) => val && typeof val == "number",
+        protected: true,
+      },
+      createdAt: {
+        colName: "created_at",
+        validator: (val) => true,
       }
     }
     super({ table: "issues", columns })
@@ -55,7 +62,7 @@ class Issue extends Model {
   protected async findAllByProjectId(projectId: number) {
     const result = await this.pool.query(`SELECT * from ${this.table} WHERE project_id = $1`, [projectId])
     if (!result) throw new HTTP400Error("Record not found")
-    return result
+    return this._filterProtectedFields(result)
   }
 
 }
