@@ -3,8 +3,12 @@ import ADMIN from './superuser.service';
 import { HTTP400Error } from '../../lib/httpErrors'
 
 
+import bcrypt from 'bcrypt';
+
+
 interface user {
   name: string,
+  username: string,
   id?: number,
   password: string,
   email: string
@@ -19,7 +23,7 @@ class UserService extends UserModel {
   }
 
   private async loadRoleFunctionality() {
-    const role = await this._fetchUserType(1)
+    const role = await this._fetchUserType('1')
     switch (role) {
       case 'admin':
         // this.roleFunctions = new ADMIN(this.userInfo)
@@ -39,7 +43,9 @@ class UserService extends UserModel {
   }
 
   private isValid(user: user) {
-    return true
+    const emailRegExp = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    if (!emailRegExp.test(user.email)) { throw new HTTP400Error('Invalid email address')}
+    if (user.password.length < 8) { throw new HTTP400Error('Password should be at least 8 character long')}
   }
 
   public async create(user: user) {
@@ -57,12 +63,25 @@ class UserService extends UserModel {
   }
 
   public async findById(userId: number) {
-    console.log(userId);
     return super.findById(userId);
   }
 
-  public async _fetchUserType(userId: number) {
-    const { role } = await this.findById(userId);
+  public async findByUsername(username: string) {
+    return super.findByUsername(username);
+  }
+
+  public async find(obj, displayProtectedFields: boolean=false) {
+    return super.find(obj, displayProtectedFields);
+  }
+
+  public async signIn(username: string, password:string): Promise<user|boolean>{
+    const [ user ] = await this.find({ username }, true)
+    const match = await bcrypt.compare(password, user.password)
+    return match ? this._stripProtectedFields(user) : false
+  }
+
+  public async _fetchUserType(username: string): Promise<string> {
+    const [{ role }] = await this.find({ username });
     return role
   }
 }

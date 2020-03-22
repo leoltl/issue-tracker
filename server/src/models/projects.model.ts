@@ -24,19 +24,35 @@ class Project extends Model {
   }
 
   async create(project: project) {
-    if (!this.validate(project, ["name"])) throw new HTTP400Error("Value provide is not valid")
-    var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);
-    const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
-    return result
+    try {
+      this.validate(project, ["name"])
+      var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);
+      const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
+      return result
+    } catch (e) {
+      if (e.name == 'Validator Rejected') {
+        throw new HTTP400Error(e.message)
+      } else {
+        throw e
+      }
+    }
   }
 
   async update(project: project, id) {
-    if (!this.validate(project, ["name", "id"])) throw new HTTP400Error("Value provide is not valid")
-    await this.findById(id)
-    var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);
-    const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`
-    const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
-    return result
+    try {
+      this.validate(project, ["name", "id"])
+      await this.findById(id)
+      var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);
+      const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`
+      const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
+      return result
+    } catch (e) {
+      if (e.name == 'Validator Rejected') {
+        throw new HTTP400Error(e.message)
+      } else {
+        throw e
+      }
+    }
   }
 
 }

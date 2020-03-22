@@ -45,24 +45,41 @@ class Issue extends Model {
   }
 
   protected async create(issue: issue) {
-    if (!this.validate(issue, ["title", "description", "authorId", "projectId"])) throw new HTTP400Error("Value provide is not valid")
-    //TODO: check valid issue author
-    var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
-    const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
-    return result
+    try {
+      this.validate(issue, ["title", "description", "authorId", "projectId"])
+      //TODO: check valid issue author
+      var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
+      const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
+      return result
+    } catch (e) {
+      if (e.name == 'Validator Rejected') {
+        throw new HTTP400Error(e.message)
+      } else {
+        throw e
+      }
+    }
+    
   }
 
   protected async update(issue: issue, id) {
-    if (!this.validate(issue, ["title", "description", "authorId", "projectId"])) throw new HTTP400Error("Value provide is not valid")
-    await this.findById(id)
-    const result = await this.pool.query(`UPDATE ${this.table} SET name = $1 WHERE id = $2`, [issue, issue.id])
-    return result
+    try {
+      this.validate(issue, ["title", "description", "authorId", "projectId"])
+      await this.findById(id)
+      const result = await this.pool.query(`UPDATE ${this.table} SET name = $1 WHERE id = $2`, [issue, issue.id])
+      return result
+    } catch (e) {
+      if (e.name == 'Validator Rejected') {
+        throw new HTTP400Error(e.message)
+      } else {
+        throw e
+      }
+    }
   }
 
   protected async findAllByProjectId(projectId: number) {
     const result = await this.pool.query(`SELECT * from ${this.table} WHERE project_id = $1`, [projectId])
     if (!result) throw new HTTP400Error("Record not found")
-    return this._filterProtectedFields(result)
+    return this._stripProtectedFields(result)
   }
 
 }
