@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 import express from "express";
 import morgan from "morgan";
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
@@ -16,6 +17,9 @@ const PORT = process.env.PORT || 3000
 const app = express();
 app.use(morgan("dev"))
 app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:8080'
+}));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(expressSession({

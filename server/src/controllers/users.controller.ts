@@ -1,11 +1,11 @@
 import UserService from "../services/Users/users.service";
-import { Request, Response, NextFunction, Router, Error } from "express";
-import { HTTP400Error } from '../lib/httpErrors';
+import { Request, Response, NextFunction, Error } from "express";
+import { HTTP400Error, HTTP401Error } from '../lib/httpErrors';
 
 class UserController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await (new UserService()).findAll();
+      const result = await new UserService().findAll();
       res.send(result);
     } catch (e) {
       next(e)
@@ -25,7 +25,7 @@ class UserController {
   async create(req: Request, res: Response, next: NextFunction) {
     const newUser = req.body;
     try {
-      const result = await (new UserService()).create(newUser);
+      const result = await new UserService().create(newUser);
       res.send(result)
     } catch (e) {
       next(e)
@@ -47,15 +47,16 @@ class UserController {
   }
 
   async signIn(req: Request, res: Response, next: NextFunction) {
-    const { username, password } = req.body;
+    const { username, password } = req.body.data;
     const userService = new UserService();
     try {
+      if (!username || !password) throw new HTTP400Error('Missing credentials. Please try again.')
       const authenticatedUser = await userService.signIn(username, password);
-      if (!authenticatedUser) throw Error
+      if (!authenticatedUser) throw new HTTP401Error('Authentication failed. Please try again.')
       req.session.user = authenticatedUser
       res.sendStatus(200)
     } catch (e) {
-      next(new HTTP400Error('Authentication failed. Please try again.'))
+      next(e)
     }
   }
 
