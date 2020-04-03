@@ -31,7 +31,7 @@ export default {
         })
         
         let isLoading = ref(false);
-        const handleClick = function (e) { 
+        const handleClick = function (e) {
             if (context.listeners.click && !isLoading.value) {
                 if (!props.hasAsync) {
                     context.emit('click', e)
@@ -44,7 +44,6 @@ export default {
         }
         return {
             buttonType,
-            message,
             cssClass,
             isLoading,
             handleClick
@@ -69,6 +68,12 @@ export default {
 //         font-size: $text-font-size-sm;
 //     }
 // }
+$btn-height: 32px;
+button {
+    position: relative;
+    height: $btn-height;
+    width: 100%;
+}
 
 @keyframes spinner {
   to {transform: rotate(360deg);}
@@ -81,13 +86,13 @@ export default {
         position: absolute;
         top: 50%;
         left: 50%;
-        // width: $button-height-sm / 2 * 1.2;
-        // height: $button-height-sm / 2 * 1.2;
-        // margin-left: -$button-height-sm / 4 * 1.2;
-        // margin-top: -$button-height-sm / 4 * 1.2;
+        width: $btn-height / 2 * 1.2;
+        height: $btn-height / 2 * 1.2;
+        margin-left: -$btn-height / 4 * 1.2;
+        margin-top: -$btn-height / 4 * 1.2;
         border-radius: 50%;
         border: 2px solid #ccc;
-        border-top-color: $ele-ui-color-danger;
+        // border-top-color: $ele-ui-color-danger;
         animation: spinner .6s linear infinite;
     }
 }
