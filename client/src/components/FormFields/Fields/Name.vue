@@ -10,7 +10,7 @@ export default {
     setup(props, { emit }) {
         const { input, errors } = useValidator(
             props.value, 
-            [isRequired(), minLength(1)], 
+            [isRequired(), minLength(2)], 
             value => emit("input", value)
         );
         const computedLabel = computed(() => props.label || "Name" )

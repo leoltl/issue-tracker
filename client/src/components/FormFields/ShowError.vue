@@ -18,6 +18,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+  .form-error {
+    font-size: 0.7rem;
+    color: red;
+    opacity: 0.8;
+  }
 </style>

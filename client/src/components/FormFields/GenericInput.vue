@@ -1,9 +1,7 @@
 <template>
-    <div>
-        <label>
-            {{ computedLabel }}:
-            <input :type="computedType" v-model="input" :name="computedLabel"/>
-        </label>
+    <div class="form-field-group">
+        <label for="computedLabel">{{ computedLabel }}:<span class="asterisk" v-if="required">*</span></label>
+        <input :type="computedType" v-model="input" :name="computedLabel"/>
         <ShowError v-if="input" :errors="errors" />
     </div>
 </template>
@@ -14,7 +12,7 @@ import useValidator from '@/composition/useValidator';
 import ShowError from './ShowError';
 export default {
     name: "Input",
-    props: ["value", "label"],
+    props: ["value", "label", "required"],
     components: {
         ShowError
     },
@@ -37,5 +35,17 @@ export default {
 </script>
 
 <style>
-
+    input {
+        border: none;
+        border-bottom: 1px solid black;
+        padding-bottom: 5px;
+    }
+    label {
+        margin-bottom: 5px;
+        color: #666;
+        font-size: 0.8rem;
+    }
+    .asterisk {
+        color: red;
+    }
 </style>

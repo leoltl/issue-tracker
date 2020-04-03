@@ -68,11 +68,22 @@ export default {
 //         font-size: $text-font-size-sm;
 //     }
 // }
-$btn-height: 32px;
+$btn-height: 28px;
+$btn-primary-color: #0046be;
+$btn-primary-text: #fff;
 button {
     position: relative;
     height: $btn-height;
     width: 100%;
+    border: none;
+    cursor: pointer;
+    font-family: 'Muli', sans-serif;
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
+    box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
+    border-radius: 5px;
+    background-color: $btn-primary-color;
+    color: $btn-primary-text
 }
 
 @keyframes spinner {

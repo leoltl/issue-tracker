@@ -1,18 +1,20 @@
 <template>
   <form @submit.prevent>
-    <InputUsername v-model="form.username" />
-    <InputPassword v-model="form.password" />
-    <template v-if="isSignUp">
-      <InputEmail v-model="form.email"/>
-      <InputName v-model="form.name" />
-      <InputPassword v-model="form.password2" :label="'Confirm Password'" />
-    </template>
+    <div class="form-fields">
+      <InputUsername v-model="form.username" :required="true"/>
+      <InputPassword v-model="form.password" :required="true"/>
+      <template v-if="isSignUp">
+        <InputPassword v-model="form.password2" :label="'Confirm Password'"  :required="true"/>
+        <InputName v-model="form.name" :label="'Full Name'" :required="true"/>
+        <InputEmail v-model="form.email" :required="true"/>
+      </template>
+    </div>
     <div class="actions">
       <CustomButton 
         @click="handleSubmit"
         :hasAsync="true"
       >
-      Sign In
+      {{ actionName }}
       </CustomButton>
     </div>
   </form>
@@ -20,7 +22,7 @@
 
 <script>
   import { InputEmail, InputName, InputPassword, InputUsername } from './FormFields';
-  import { reactive } from '@vue/composition-api';
+  import { reactive, computed } from '@vue/composition-api';
   import useRemoteData from '@/composition/useRemoteData';
   import CustomButton from '@/components/Button'
   export default {
@@ -67,9 +69,12 @@
         }
       }
 
+      const actionName = computed(() => props.isSignUp ? "Sign Up" : "Sign In")
+
       return {
         form,
-        handleSubmit
+        handleSubmit,
+        actionName
       }
     },
   }
@@ -78,5 +83,19 @@
 <style lang="scss" scoped>
   .actions {
     width: 100px; //hard-coded for now.
+  }
+  .form-field-group {
+    display: flex;
+    flex-direction: column;
+    margin: 0.25rem 0;
+  }
+
+  .actions {
+    margin: 1.5rem 1rem;
+  }
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
   }
 </style>
