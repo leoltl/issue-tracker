@@ -23,7 +23,8 @@ class UserController {
   }
 1
   async create(req: Request, res: Response, next: NextFunction) {
-    const newUser = req.body;
+    const newUser = req.body.data
+    console.log(req.body, newUser)
     try {
       const result = await new UserService().create(newUser);
       res.send(result)
@@ -48,7 +49,7 @@ class UserController {
 
   async signIn(req: Request, res: Response, next: NextFunction) {
     console.log(req.body)
-    const { username, password } = req.body;
+    const { username, password } = req.body.data;
     const userService = new UserService();
     try {
       if (!username || !password) throw new HTTP400Error('Missing credentials. Please try again.')

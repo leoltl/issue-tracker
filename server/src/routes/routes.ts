@@ -19,9 +19,9 @@ router.put('/projects/:projectId/issues/:issueId', IssueController.update);
 
 router.get('/u/all', UserController.getAll);
 router.get('/u/:username', UserController.get);
-router.post('/u', UserController.create);
 router.put('/u/:username', authorize(roles.admin), UserController.update);
 
+router.post('/signup', UserController.create);
 router.post('/signin', UserController.signIn);
 router.post('/signout', UserController.signOut);
 

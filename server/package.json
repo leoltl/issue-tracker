@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node build/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc-watch --onSuccess \"node ./build/server.js\""
+    "dev": "tsc-watch --onSuccess \"nodemon ./build/server.js\""
   },
   "author": "Leo Lee",
   "license": "ISC",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "morgan": "^1.9.1",
+    "nodemon": "^2.0.2",
     "tsc-watch": "^4.2.3"
   }
 }
