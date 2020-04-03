@@ -26,8 +26,9 @@ class UserController {
     const newUser = req.body.data
     console.log(req.body, newUser)
     try {
-      const result = await new UserService().create(newUser);
-      res.send(result)
+      const user = await new UserService().create(newUser);
+      req.session.user = user
+      res.status(200).send(user);
     } catch (e) {
       next(e)
     } 
@@ -56,7 +57,7 @@ class UserController {
       const authenticatedUser = await userService.signIn(username, password);
       if (!authenticatedUser) throw new HTTP401Error('Authentication failed. Please try again.')
       req.session.user = authenticatedUser
-      res.sendStatus(200)
+      res.status(200).json(authenticatedUser)
     } catch (e) {
       next(e)
     }
