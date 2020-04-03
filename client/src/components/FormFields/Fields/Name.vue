@@ -1,8 +1,9 @@
 <script>
 import { computed } from '@vue/composition-api';
-import { isRequired, minLength } from './Validators'
+import { isRequired, minLength } from '../Validators'
 import useValidator from '@/composition/useValidator';
-import GenericInput from './GenericInput';
+import GenericInput from '../GenericInput';
+
 export default {
     name: "InputName",
     mixins: [GenericInput],

@@ -20,7 +20,8 @@ function useRemoteData(path, options={}) {
         }
         try {
             data.isLoading = true
-            const response = await Request[_method](path, Object.assign(_options, _payload))
+            var tmp = Object.assign(_options, _payload)
+            const response = await Request[_method](path, tmp)
             data.response = response.data;
             callback && callback()
         } catch (e){

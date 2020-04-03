@@ -1,19 +1,19 @@
 <script>
 import { computed } from '@vue/composition-api';
-import { isEmail, isRequired } from './Validators';
+import { isRequired, minLength } from '../Validators'
 import useValidator from '@/composition/useValidator';
-import GenericInput from './GenericInput';
+import GenericInput from '../GenericInput';
 
 export default {
-    name: "InputEmail",
+    name: "InputUsername",
     mixins: [GenericInput],
     setup(props, { emit }) {
         const { input, errors } = useValidator(
             props.value, 
-            [isRequired(), isEmail() ], 
+            [isRequired(), minLength(2)], 
             value => emit("input", value)
         );
-        const computedLabel = computed(() => props.label || "Email" )
+        const computedLabel = computed(() => props.label || "Username" )
         return {
             input,
             errors,
@@ -22,7 +22,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>

@@ -17,11 +17,28 @@
       AccountForm,
     },
     setup() {
-      const isSignUp = ref(true)
+      const isSignUp = ref(false)
       const { request: loginRequest } = useRemoteData('signin', { method: "POST" })
+      const { request: signupRequest } = useRemoteData('signup', { method: "POST" })
       function handleSubmit(payload) {
-        console.log(payload)
-        console.log(loginRequest);
+        let data;
+        if (isSignUp.value) {
+          data = {
+            username: payload.username,
+            password: payload.password,
+            password2: payload.password2,
+            email: payload.email,
+            name: payload.name,
+            role: 'tester'
+          }
+          signupRequest({ data })
+        } else {
+          data = {
+            username: payload.username,
+            password: payload.password,
+          }
+          loginRequest({ data })
+        }
       }
       function toggleForm() {
         isSignUp.value = !isSignUp.value;

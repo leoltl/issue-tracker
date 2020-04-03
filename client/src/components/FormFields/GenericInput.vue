@@ -2,7 +2,7 @@
     <div>
         <label>
             {{ computedLabel }}:
-            <input type="text" v-model="input" :name="computedLabel"/>
+            <input :type="computedType" v-model="input" :name="computedLabel"/>
         </label>
         <ShowError v-if="input" :errors="errors" />
     </div>
@@ -25,10 +25,12 @@ export default {
             value => emit("input", value)
         );
         const computedLabel = computed(() => props.label || "Field" )
+        const computedType = computed(() => props.type || "text")
         return {
             input,
             errors,
-            computedLabel
+            computedLabel,
+            computedType
         }
     }
 }
