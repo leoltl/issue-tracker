@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-const instance =  axios.create({
-  baseURL:'http://localhost:3000/',
-  // proxy: {
-  //   host: 'localhost',
-  //   port: 3000,
-  // },
+const BASE_URL = 'http://localhost:3000/'
+
+const instance = axios.create({
+  baseURL: BASE_URL
 })
 
 instance.interceptors.response.use((response) => {
