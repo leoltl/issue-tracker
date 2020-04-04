@@ -8,7 +8,6 @@ import morgan from "morgan";
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import expressSession from 'express-session';
 
 import routes from './routes/routes';
 
@@ -22,16 +21,6 @@ app.use(cors({
 }));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(expressSession({
-  secret: process.env.SESSION_SECRET,
-  key: 'user_sid',
-  // cookie: { secure: true } //REQUIRE HTTPS,
-  resave: true,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000 
-  },
-}))
 
 app.use('/', routes)
 
