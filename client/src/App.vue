@@ -13,7 +13,10 @@ export default {
     NavBar,
   },
   created() {
-    this.$store.dispatch('checkAuth')
+    this.$store.dispatch('loadToken')
+  },
+  async mounted() {
+    await this.$store.dispatch('checkAuth')
   }
 }
 </script>

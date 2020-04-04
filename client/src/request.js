@@ -6,6 +6,16 @@ const instance = axios.create({
   baseURL: BASE_URL
 })
 
+
+instance.interceptors.request.use(config => {
+  const storedToken = window.localStorage.getItem('jwt-token')
+  if (storedToken) {
+    config.headers['Authorization'] = `Bearer ${storedToken}`;
+  }
+  return config
+}, err => Promise.reject(err))
+
+
 instance.interceptors.response.use((response) => {
   // do something with the response data
   console.log('Response was received');

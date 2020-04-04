@@ -72,18 +72,7 @@
         } catch (err) {
           this.$store.dispatch(`${action}Failed`, this.actionName);
           if (loaderCallback) loaderCallback(err)
-        } finally {
-          this.resetForm();
         }
-      },
-      resetForm() {
-        console.log('reset called');
-        
-        this.form.username= '',
-        this.form.password= '',
-        this.form.password2= '',
-        this.form.email= '',
-        this.form.name= ''
       }
     },
     computed: {

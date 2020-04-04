@@ -14,8 +14,9 @@ Vue.config.productionTip = false
 Vue.use(VueCompositionApi);
 Vue.use(ElementUI);
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(route => route.meta.restricted) && !store.getters.isAuthenticated) {
+router.beforeResolve((to, from, next) => {
+  const isAuthenticated = store.getters.isAuthenticated || window.localStorage.getItem('jwt-token');
+  if (to.matched.some(route => route.meta.restricted) && !isAuthenticated) {
     next({ name: 'Login', wantedPath: to.fullPath })
     return 
   }

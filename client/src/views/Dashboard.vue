@@ -3,6 +3,7 @@
     DASHBOARD
     {{ projects }}
     <button @click="kk">fetch</button>
+    <button @click="pp">me</button>
   </div>
 </template>
 
@@ -14,9 +15,11 @@ export default {
     $store.dispatch("getAllProjects")
     const projects = computed(() => $store.state.projects );
     const kk = () => $store.dispatch("getAllProjects")
+    const pp = () => $store.dispatch("checkAuth")
     return {
       projects,
-      kk
+      kk,
+      pp
     }
   }
 }
