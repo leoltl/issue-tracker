@@ -3,6 +3,7 @@ import { Request, Response, NextFunction, Router, Error } from "express";
 
 class ProjectController {
   async getAll(req: Request, res: Response, next: NextFunction) {
+    console.log(req.sessionStore);
     try {
       const result = await (new ProjectService()).findAll();
       res.send(result);

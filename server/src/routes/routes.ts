@@ -24,5 +24,6 @@ router.put('/u/:username', authorize(roles.admin), UserController.update);
 router.post('/signup', UserController.create);
 router.post('/signin', UserController.signIn);
 router.post('/signout', UserController.signOut);
+router.get('/me', UserController.getMe);
 
 export default router;

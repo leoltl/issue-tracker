@@ -49,7 +49,6 @@ class UserController {
   }
 
   async signIn(req: Request, res: Response, next: NextFunction) {
-    console.log(req.body)
     const { username, password } = req.body.data;
     const userService = new UserService();
     try {
@@ -57,6 +56,7 @@ class UserController {
       const authenticatedUser = await userService.signIn(username, password);
       if (!authenticatedUser) throw new HTTP401Error('Authentication failed. Please try again.')
       req.session.user = authenticatedUser
+      console.log(req.sessionStore)
       res.status(200).json(authenticatedUser)
     } catch (e) {
       next(e)
@@ -69,6 +69,12 @@ class UserController {
     }
     res.clearCookie('user_sid')
     res.sendStatus(200)
+  }
+
+  getMe(req: Request, res: Response, next: NextFunction) {
+    console.log(req);
+    const _user = req.session.user || {};
+    return res.json(_user)
   }
 }
 
