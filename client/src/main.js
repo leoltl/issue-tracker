@@ -14,6 +14,14 @@ Vue.config.productionTip = false
 Vue.use(VueCompositionApi);
 Vue.use(ElementUI);
 
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(route => route.meta.restricted) && !store.getters.isAuthenticated) {
+    next({ name: 'Login', wantedPath: to.fullPath })
+    return 
+  }
+  next();
+})
+
 new Vue({
   router,
   store,

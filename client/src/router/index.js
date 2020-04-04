@@ -7,14 +7,20 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/login',
-    name: 'Login',
-    component: Login
+    path: '/',
+    name: 'Home',
+    component: PageNotFound,
+    meta: { restricted: true }
   },
   {
-      path: '*',
-      name: "NotFound",
-      component: PageNotFound
+    path: '/login',
+    name: 'Login',
+    component: Login,
+  },
+  {
+    path: '*',
+    name: "NotFound",
+    component: PageNotFound,
   }
 ]
 

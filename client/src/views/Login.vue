@@ -29,7 +29,7 @@
         setTimeout(() => {
           isSignUp.value = !isSignUp.value;
           switchFormAnim.value = false
-        }, 150)
+        }, 100)
       }
       const cssClass = computed(() => isSignUp.value ? 'sign-up' : 'sign-in')
       return {
@@ -79,7 +79,6 @@
     .sign-up {
       flex-direction: row-reverse;
       .form-fields {
-        // border: 1px solid red;
         .form-field-group:nth-of-type(1) { order: 1; }
         .form-field-group:nth-of-type(2) { order: 4; }
         .form-field-group:nth-of-type(3) { order: 5; }

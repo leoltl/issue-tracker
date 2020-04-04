@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { computed } from '@vue/composition-api';
+import { computed, watch } from '@vue/composition-api';
 import useValidator from '@/composition/useValidator';
 import ShowError from './ShowError';
 export default {
@@ -24,6 +24,12 @@ export default {
         );
         const computedLabel = computed(() => props.label || "Field" )
         const computedType = computed(() => props.type || "text")
+        
+        watch(props.value, val => {
+            console.log(val)
+            input.value = val
+        })
+
         return {
             input,
             errors,

@@ -1,7 +1,7 @@
 <template>
   <nav>
     <div class="logo">
-      <router-link :to="{name: 'home'}">
+      <router-link :to="{name: 'Home'}">
         <svg id="worm" enable-background="new 0 0 300 300" height="60" viewBox="0 0 300 300" width="60" xmlns="http://www.w3.org/2000/svg">
           <g>
             <path d="m192 89.074c7.719 0 14-6.281 14-14s-6.281-14-14-14-14 6.281-14 14 6.281 14 14 14zm0-20c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"/>
@@ -16,7 +16,11 @@
 
 <script>
 export default {
-
+  computed: {
+    username() {
+      return this.$store.state.user? this.$store.state.user.name : ""
+    }
+  }
 }
 </script>
 

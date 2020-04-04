@@ -21,9 +21,8 @@
 </template>
 
 <script>
+  import APIrequest from '@/request';
   import { InputEmail, InputName, InputPassword, InputUsername } from './FormFields';
-  import { reactive, computed } from '@vue/composition-api';
-  import useRemoteData from '@/composition/useRemoteData';
   import CustomButton from '@/components/Button'
   export default {
     name: "AccountForm",
@@ -35,48 +34,63 @@
       InputUsername,
       CustomButton
     },
-    setup(props) {
-      const form = reactive({
+    data() {
+      return {
+        form: {
           username: '',
           password: '',
           password2: '',
           email: '',
           name: ''
-      })
-      
-      const { request: loginRequest } = useRemoteData('signin', { method: "POST" })
-      const { request: signupRequest } = useRemoteData('signup', { method: "POST" })
-
-      function handleSubmit(e, loaderCallback) {
-        let data;
-        const TEMP_ROLE = 'tester'
-        if (props.isSignUp.value) {
-          data = {
-            username: form.username,
-            password: form.password,
-            password2: form.password2,
-            email: form.email,
-            name: form.name,
-            role: TEMP_ROLE
-          }
-          signupRequest({ data }, loaderCallback)
-        } else {
-          data = {
-            username: form.username,
-            password: form.password,
-          }
-          loginRequest({ data }, loaderCallback)
         }
       }
-
-      const actionName = computed(() => props.isSignUp ? "Sign Up" : "Sign In")
-
-      return {
-        form,
-        handleSubmit,
-        actionName
+    },
+    methods: {
+       async handleSubmit(e, loaderCallback) {
+        let data;
+        const TEMP_ROLE = 'tester'
+        if (this.isSignUp) {
+          data = {
+            username: this.form.username,
+            password: this.form.password,
+            password2: this.form.password2,
+            email: this.form.email,
+            name: this.form.name,
+            role: TEMP_ROLE
+          }
+        } else {
+          data = {
+            username: this.form.username,
+            password: this.form.password,
+          }
+        }
+        const action = this.isSignUp ? 'signup' : 'signin'
+        try {
+          const res = await APIrequest.post(`/${action}`, { data })
+          this.$store.dispatch(`${action}Success`, res.data);
+          if (loaderCallback) loaderCallback()
+        } catch (err) {
+          this.$store.dispatch(`${action}Failed`, this.actionName);
+          if (loaderCallback) loaderCallback(err)
+        } finally {
+          this.resetForm();
+        }
+      },
+      resetForm() {
+        console.log('reset called');
+        
+        this.form.username= '',
+        this.form.password= '',
+        this.form.password2= '',
+        this.form.email= '',
+        this.form.name= ''
       }
     },
+    computed: {
+      actionName() {
+        return this.isSignUp ? "Sign Up " : "Sign In"
+      }
+    }
   }
 </script>
 

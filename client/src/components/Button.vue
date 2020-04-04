@@ -53,21 +53,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-// .primary {
-//   width: 100%;
-//   height: $button-height-sm;
-//   font-size: $text-font-size-lg;
-//   font-weight: $text-font-weight-lg;
-//   border: none;
-//   position: relative;
-//   color: $text-color-white;
-//   background-color: $ele-ui-color-danger;
-//   border-radius: 0.25rem;
-//     @include respond-below(sm) {
-//         font-size: $text-font-size-sm;
-//     }
-// }
 $btn-height: 28px;
 $btn-primary-color: #0046be;
 $btn-primary-text: #fff;
@@ -103,7 +88,7 @@ button {
         margin-top: -$btn-height / 4 * 1.2;
         border-radius: 50%;
         border: 2px solid #ccc;
-        // border-top-color: $ele-ui-color-danger;
+        border-top-color: $btn-primary-color;
         animation: spinner .6s linear infinite;
     }
 }
