@@ -1,20 +1,27 @@
 import { Request, Response, NextFunction, Router, Error } from "express";
-import { HTTP400Error } from '../../lib/httpErrors';
+import { HTTP400Error, HTTP401Error } from '../../lib/httpErrors';
 import jwt from 'jsonwebtoken';
 
 const SECRET = process.env.JWT_SECRET
 
-function authenticate(req: Request, res: Response, next: NextFunction) {
-  // console.log('req', req)
+export function extractUserFromHeader(req, res, next) {
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
-    const valid = jwt.verify(token, SECRET);
-    const { username, name, email, role } = valid;
+    const validUser = jwt.verify(token, SECRET);
+    const { username, name, email, role } = validUser;
     req.user = { username, name, email, role };
     next()
   } catch (e) {
     req.user = null;
     next()
+  }
+}
+
+function authenticate(req: Request, res: Response, next: NextFunction) {
+  if (req.user != null) {
+    next()
+  } else {
+    throw new HTTP401Error('Authentication failed for this protected route. Please Login and retry.')
   }
 }
 

@@ -1,11 +1,15 @@
 import IssueService from "../services/issues.service";
+import ProjectService from "../services/projects.service";
 import { Request, Response, NextFunction, Router, Error } from "express";
 
 class IssueController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const { projectId } = req.params
-      const result = await (new IssueService()).findAllByProjectId(projectId);
+      const { id: dbID } = await (new ProjectService()).findIdByUUID(projectId);
+      console.log(dbID);
+      const result = await (new IssueService()).findAllByProjectId(dbID);
+      console.log(result);
       res.send(result);
     } catch (e) {
       next(e)

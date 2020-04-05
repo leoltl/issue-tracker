@@ -30,6 +30,7 @@ class Issue extends Model {
       authorId: {
         colName: "author_id",
         validator: (val) => val && typeof val == "number",
+        protected: true,
       },
       projectId: {
         colName: "project_id",
@@ -39,6 +40,10 @@ class Issue extends Model {
       createdAt: {
         colName: "created_at",
         validator: (val) => true,
+      },
+      issuesUuid: {
+        colName: "issues_uuid",
+        validator: () => true
       }
     }
     super({ table: "issues", columns })
@@ -77,9 +82,9 @@ class Issue extends Model {
   }
 
   protected async findAllByProjectId(projectId: number) {
-    const result = await this.pool.query(`SELECT * from ${this.table} WHERE project_id = $1`, [projectId])
+    const result = await this.pool.query(`SELECT * from ${this.table} JOIN users ON ${this.table}.author_id = users.id WHERE project_id = $1`, [projectId])
     if (!result) throw new HTTP400Error("Record not found")
-    return this._stripProtectedFields(result)
+    return this._stripProtectedFields(result, ['password'])
   }
 
 }

@@ -44,7 +44,6 @@ class UserService extends UserModel {
   }
 
   private isValid(user: user) {
-    console.log('isValid', user)
     const emailRegExp = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
     if (!emailRegExp.test(user.email)) { throw new HTTP400Error('Invalid email address')}
     if (user.password.length < 8) { throw new HTTP400Error('Password should be at least 8 character long')}
@@ -79,7 +78,7 @@ class UserService extends UserModel {
   }
 
   public async signIn(username: string, password:string): Promise<user|boolean>{
-    const [ user ] = await this.find({ username }, true)
+    const user = await this.findOne({ username }, true)
     const match = await bcrypt.compare(password, user.password)
     return match ? this._stripProtectedFields(user) : false
   }

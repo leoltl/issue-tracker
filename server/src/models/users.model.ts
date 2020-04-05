@@ -44,6 +44,10 @@ class UserModel extends Model {
         validator: (val) => {
           return val && [Roles.developer, Roles.productManager, Roles.tester].includes(val)
         }
+      },
+      usersUuid: {
+        colName: "users_uuid",
+        validator: () => true
       }
     }
     super({ table: "users", columns })

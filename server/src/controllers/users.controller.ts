@@ -27,8 +27,9 @@ class UserController {
     const newUser = req.body.data
     try {
       const user = await new UserService().create(newUser);
-      req.session.user = user
-      res.status(200).send(user);
+      const token = await generateJWToken(user)
+      console.log(user, token)
+      res.status(200).send(token)
     } catch (e) {
       next(e)
     } 
@@ -38,7 +39,6 @@ class UserController {
     const { username } = req.params;
     const userService = new UserService();
     const [ user ] = await userService.find({ username }, true );
-    console.log(user);
     const updateUser = { ...user, ...req.body };
     try {
       const result = await userService.update(updateUser, user.id);

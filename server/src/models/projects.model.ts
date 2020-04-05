@@ -18,6 +18,10 @@ class Project extends Model {
         validator: (val) => val && typeof val == "number",
         isPrimaryKey: true,
         protected: true,
+      },
+      projectsUuid: {
+        colName: "projects_uuid",
+        validator: () => true
       }
     }
     super({ table: "projects", columns })

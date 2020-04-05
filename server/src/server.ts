@@ -7,21 +7,20 @@ import express from "express";
 import morgan from "morgan";
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 
+import { extractUserFromHeader } from './middlewares/authentication/jwt';
 import routes from './routes/routes';
 
 const PORT = process.env.PORT || 3000 
 
 const app = express();
 app.use(morgan("dev"))
-app.use(cookieParser());
 app.use(cors({
   origin: 'http://localhost:8080'
 }));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-
+app.use(extractUserFromHeader)
 app.use('/', routes)
 
 //error handling
