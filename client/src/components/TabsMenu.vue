@@ -12,9 +12,9 @@
 
 <script>
 import Tab from '@/components/Tab';
-import { createNamespacedHelpers } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
-const { mapState, mapActions } = createNamespacedHelpers('base')
+// const { mapState, mapActions } = createNamespacedHelpers('base')
 export default {
   name: "TabsMenu",
   components: {

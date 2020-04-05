@@ -23,10 +23,16 @@ export default {
 <style lang="scss">
   @import '@/assets/css-reset.scss';
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Muli:wght@300;400;700&display=swap');
-  html {
+  :root {
     box-sizing: border-box;
     font-family: 'Muli', 'Montserrat', sans-serif;
+    font-size: 16px;
   }
+  h1 { font-size: 5rem }
+  h2 { font-size: 4rem }
+  h3 { font-size: 3rem }
+  h4 { font-size: 2rem }
+  h5 { font-size: 1.5rem }
   #layout {
     display: grid;
     grid-template-areas: "nav nav"

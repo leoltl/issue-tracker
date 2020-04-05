@@ -3,27 +3,61 @@
     DASHBOARD
     Select your project
     <TabsMenu />
-    <p v-for="issue of issues" :key="issue.issuesUuid" >{{ issue }}</p>
+    <section class="project-TONAME" v-if="currentProjectID">
+      <SubSection :title="'details'"/>
+      <SubSection :title="'issues'">
+        <Table 
+          :data="issues" 
+          :definedColumns="issueColumns" 
+          :withAction="issueActions"
+        />
+      </SubSection>
+      <SubSection :title="'users'"/>
+    </section>
+
+    {{ issues }}
   </div>
 </template>
 
 <script>
-import TabsMenu from '@/components/TabsMenu'
-import { createNamespacedHelpers } from 'vuex';
+import TabsMenu from '@/components/TabsMenu';
+import Table from '@/components/Table';
+import SubSection from '@/components/SubSection';
+import { mapState } from 'vuex';
+import { displayDate } from '@/filters';
 
-const { mapState } = createNamespacedHelpers('base')
+const ISSUES_COLUMNS = [
+  { name: "title" }, 
+  { name: "description" }, 
+  { name: "createdAt", dataFilter: displayDate }, 
+  { name: "name", displayAs: "Reported By" }
+];
+// const { mapState } = createNamespacedHelpers('base')
 export default {
   name: "Dashboard",
   components: {
-    TabsMenu
-  },
+    TabsMenu,
+    SubSection,
+    Table,
+   },
   created() {
-    this.$store.dispatch('base/getAllProjects');
+    this.$store.dispatch('getAllProjects');
   },
   computed: {
     ...mapState([
-      'issues'
-    ])
+      'issues',
+      'currentProjectID'
+    ]),
+    issueColumns() {
+      return ISSUES_COLUMNS
+    },
+    issueActions() {
+      function TONAME(dataRow) {console.log('action!', this, dataRow.issuesUuid)}
+      return [
+        { name: "Details" , displayAs: " ", action: TONAME.bind(this) },
+      ];
+    }
+
   }
 }
 </script>
@@ -31,5 +65,23 @@ export default {
 <style lang="scss" scoped>
   .dashboard {
     height: 100%;
+    background-color: #eee;
+    .project-TONAME {
+      margin: 2vh 2.5vw;
+      display: grid;
+      grid-template: "tickets details"
+                     "tickets users";
+      grid-template-columns: 70% auto;
+      grid-gap: 2.5vw;
+      .sub-section-details {
+        grid-area: details
+      }
+      .sub-section-tickets {
+        grid-area: tickets
+      }
+      .sub-section-users {
+        grid-area: users
+      }
+    }
   }
 </style>

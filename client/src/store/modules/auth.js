@@ -26,16 +26,16 @@ const auth = {
         // check for token expirary
         const expiraryHour = (new Date(exp * 1000) - Date.now()) / 1000 / 60 / 60
         if (expiraryHour > 0 && expiraryHour < 1) {
-          this.dispatch("refreshToken")
+          this.dispatch("auth/refreshToken")
         }
       }
     },
     async refreshToken() {
-      const { data: token } = await APIrequest('/refresh-token')
+      const { data: token } = await APIrequest.get('/refresh-token')
       window.localStorage.setItem('jwt-token', token)
     },
     async checkAuth({ commit }) {
-      const { data } = await APIrequest('/me')
+      const { data } = await APIrequest.get('/me')
       if (!data.user) {
         this.dispatch("pushRouter", { name: "Login" })
       }
