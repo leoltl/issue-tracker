@@ -18,8 +18,7 @@ instance.interceptors.request.use(config => {
 
 instance.interceptors.response.use((response) => {
   // do something with the response data
-  console.log('Response was received');
-
+  console.log('Response was received from', response.config.url)
   return response;
 }, error => {
   console.log(error);

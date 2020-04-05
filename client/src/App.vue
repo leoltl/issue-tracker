@@ -1,31 +1,21 @@
 <template>
   <div id="app">
-    <NavBar />
-    <router-view />
+    <Layout />
   </div>
 </template>
 
 <script>
-import NavBar from '@/components/NavBar'
+import Layout from '@/views/Layout'
 export default {
   name: 'App',
   components: {
-    NavBar,
+    Layout,
   },
   created() {
-    this.$store.dispatch('loadToken')
+    this.$store.dispatch('auth/loadToken')
   },
   async mounted() {
-    await this.$store.dispatch('checkAuth')
+    await this.$store.dispatch('auth/checkAuth')
   }
 }
 </script>
-
-<style>
-  @import './assets/css-reset.css';
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Muli:wght@300;400;700&display=swap');
-  html {
-    box-sizing: border-box;
-    font-family: 'Muli', 'Montserrat', sans-serif;
-  }
-</style>

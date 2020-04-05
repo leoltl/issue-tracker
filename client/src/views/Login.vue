@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div class="account-form-wrapper">
     <div :class="['account-form', cssClass]">
       <div :class="{ 'switch-form': switchFormAnim }">
         <AccountForm :isSignUp="isSignUp" />
@@ -10,7 +10,7 @@
         <p v-else><a href="#" @click.prevent="toggleForm">Sign up</a> instead?</p>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script>
@@ -43,7 +43,7 @@
 </script>
 
 <style lang="scss">
-  main {
+  .account-form-wrapper {
     padding: 22.5vh 25vw;
     .account-form {
       width: 50vw;

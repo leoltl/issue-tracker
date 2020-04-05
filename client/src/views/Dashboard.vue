@@ -1,30 +1,35 @@
 <template>
-  <div>
+  <div class="dashboard">
     DASHBOARD
-    {{ projects }}
-    <button @click="kk">fetch</button>
-    <button @click="pp">me</button>
+    Select your project
+    <TabsMenu />
+    <p v-for="issue of issues" :key="issue.issuesUuid" >{{ issue }}</p>
   </div>
 </template>
 
 <script>
-import { computed } from '@vue/composition-api';
+import TabsMenu from '@/components/TabsMenu'
+import { createNamespacedHelpers } from 'vuex';
+
+const { mapState } = createNamespacedHelpers('base')
 export default {
   name: "Dashboard",
-  setup(_, {root: { $store }}) {
-    $store.dispatch("getAllProjects")
-    const projects = computed(() => $store.state.projects );
-    const kk = () => $store.dispatch("getAllProjects")
-    const pp = () => $store.dispatch("checkAuth")
-    return {
-      projects,
-      kk,
-      pp
-    }
+  components: {
+    TabsMenu
+  },
+  created() {
+    this.$store.dispatch('base/getAllProjects');
+  },
+  computed: {
+    ...mapState([
+      'issues'
+    ])
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+  .dashboard {
+    height: 100%;
+  }
 </style>

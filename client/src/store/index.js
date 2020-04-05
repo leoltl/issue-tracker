@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import { Message } from 'element-ui';|
+// import { Message } from 'element-ui';
 import { sync } from 'vuex-router-sync'
 import router from '@/router'
 import APIrequest from '@/request';
-import auth from './auth';
+import auth from './modules/auth';
 
 Vue.use(Vuex);
 
@@ -12,12 +12,21 @@ const store = new Vuex.Store({
   modules: {
     auth,
     base: {
+      namespaced: true,
       state: {
-        projects: []
+        projects: [],
+        currentProjectID: "",
+        issues: [],
       },
       mutations: {
         setProjects(state, projects) {
           state.projects = projects;
+        },
+        setCurrentProject(state, id) {
+          state.currentProjectID = id
+        },
+        setIssues(state, issues) {
+          state.issues = issues
         }
       },
       actions: {
@@ -30,6 +39,14 @@ const store = new Vuex.Store({
         async getAllProjects({ commit }) {
           const { data } = await APIrequest('/projects');
           commit('setProjects', data)
+        },
+        setCurrentProject({ commit }, projectId) {
+          commit('setCurrentProject', projectId)
+          this.dispatch('getAllIssues', projectId)
+        },
+        async getAllIssues({ commit }, projectId) {
+          const { data } = await APIrequest(`/projects/${projectId}/issues`);
+          commit('setIssues', data)
         }
       }
     }

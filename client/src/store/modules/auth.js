@@ -1,12 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
 import { Message } from 'element-ui';
 import APIrequest from '@/request';
 import { parseJWToken } from '@/utils';
 
-Vue.use(Vuex);
-
-const authModule = {
+const auth = {
+  namespaced: true,
   state: {
     user: null
   },
@@ -73,4 +70,4 @@ const authModule = {
   }
 }
 
-export default authModule;
+export default auth

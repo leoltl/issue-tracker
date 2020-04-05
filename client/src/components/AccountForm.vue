@@ -4,7 +4,7 @@
       <InputUsername v-model="form.username" :required="true"/>
       <InputPassword v-model="form.password" :required="true"/>
       <template v-if="isSignUp">
-        <InputPassword v-model="form.password2" :label="'Confirm Password'"  :required="true"/>
+        <InputPassword v-model="form.password2" :label="'Confirm Password'" :required="true"/>
         <InputName v-model="form.name" :label="'Full Name'" :required="true"/>
         <InputEmail v-model="form.email" :required="true"/>
       </template>
@@ -65,6 +65,7 @@
           }
         }
         const action = this.isSignUp ? 'signup' : 'signin'
+        // TODO: refactor fetch login into store
         try {
           const res = await APIrequest.post(`/${action}`, { data })
           this.$store.dispatch(`${action}Success`, res.data);
