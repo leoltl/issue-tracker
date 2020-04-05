@@ -41,6 +41,17 @@ class ProjectController {
       next(e)
     }
   }
+
+  async getProjectMembers(req: Request, res: Response, next: NextFunction) {
+    const service = new ProjectService()
+    try {
+      const { id: projectId } = await service.findIdByUUID(req.params.projectId)
+      const result = await service.findProjectMembership(projectId);
+      res.send(result);
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 const controller = new ProjectController()

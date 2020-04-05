@@ -13,3 +13,8 @@ CREATE TABLE issues (
 INSERT INTO issues (title, description, project_id, author_id) VALUES ('my first issue', 'first issue recorded', 1, 3);
 INSERT INTO issues (title, description, project_id, author_id) VALUES ('my first issue', 'PM first issue recorded', 1, 2);
 INSERT INTO issues (title, description, project_id, author_id) VALUES ('my first issue', 'ADMIN first issue recorded', 1, 1);
+
+
+INSERT INTO issues (title, description, project_id, author_id) VALUES ('my first issue', 'first issue recorded', 2, 3);
+INSERT INTO issues (title, description, project_id, author_id) VALUES ('my first issue', 'PM first issue recorded', 2, 2);
+INSERT INTO issues (title, description, project_id, author_id) VALUES ('my first issue', 'ADMIN first issue recorded', 2, 1);

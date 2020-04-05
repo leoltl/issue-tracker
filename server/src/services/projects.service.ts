@@ -36,6 +36,10 @@ class Project extends ProjectModel {
   public async findIdByUUID(uuid) {
     return super.findIdByUUID(uuid);
   }
+
+  public async findProjectMembership(projectId: number) {
+    return super.findProjectMembership(projectId);
+  }
 }
 
 export default Project;

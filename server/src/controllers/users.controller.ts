@@ -26,7 +26,7 @@ class UserController {
   async create(req: Request, res: Response, next: NextFunction) {
     const newUser = req.body.data
     try {
-      const user = await new UserService().create(newUser);
+      const [ user ] = await new UserService().create(newUser);
       const token = await generateJWToken(user)
       console.log(user, token)
       res.status(200).send(token)
