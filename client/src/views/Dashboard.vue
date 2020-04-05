@@ -4,7 +4,9 @@
     Select your project
     <TabsMenu />
     <section class="project-TONAME" v-if="currentProjectID">
-      <SubSection :title="'details'"/>
+      <SubSection :title="'details'">
+        Name: {{ currentProject.name }}
+      </SubSection>
       <SubSection :title="'issues'">
         <Table 
           :data="issues" 
@@ -23,7 +25,7 @@
 import TabsMenu from '@/components/TabsMenu';
 import Table from '@/components/Table';
 import SubSection from '@/components/SubSection';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { displayDate } from '@/filters';
 
 const ISSUES_COLUMNS = [
@@ -47,6 +49,9 @@ export default {
     ...mapState([
       'issues',
       'currentProjectID'
+    ]),
+    ...mapGetters([
+      "currentProject"
     ]),
     issueColumns() {
       return ISSUES_COLUMNS

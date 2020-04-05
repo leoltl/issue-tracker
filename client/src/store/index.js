@@ -17,6 +17,11 @@ const store = new Vuex.Store({
     currentProjectID: "",
     issues: [],
   },
+  getters: {
+    currentProject(state) {
+      return state.projects.find(project => project.projectsUuid == state.currentProjectID)
+    },
+  },
   mutations: {
     setProjects(state, projects) {
       state.projects = projects;

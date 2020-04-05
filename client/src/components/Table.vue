@@ -44,9 +44,6 @@ export default {
     }
   },
   computed: {
-    numberOfColumns() {
-      return this.columns.length
-    },
     nubmerOfRows() {
       return this.data.length
     },
