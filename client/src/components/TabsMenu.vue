@@ -4,9 +4,10 @@
       v-for="project in projects" 
       :project="project" 
       :key="project.projectsUuid"
-      :selected="project.issuesUuid == currentProjectID"
+      :selected="project.projectsUuid == currentProjectID"
       @click.native="setCurrentProject(project.projectsUuid)"
     />
+    <div class="plus">+</div>
   </div>
 </template>
 
@@ -36,8 +37,16 @@ export default {
 
 <style lang="scss" scoped>
   .tabs-menu {
-    border: 2px solid green;
+    border-bottom: 1px solid black;
     display: flex;
     height: 5vh;
+  }
+  .plus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    width: 5vh;
+    cursor: pointer;
   }
 </style>

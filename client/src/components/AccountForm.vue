@@ -68,10 +68,10 @@
         // TODO: refactor fetch login into store
         try {
           const res = await APIrequest.post(`/${action}`, { data })
-          this.$store.dispatch(`${action}Success`, res.data);
+          this.$store.dispatch(`auth/${action}Success`, res.data);
           if (loaderCallback) loaderCallback()
         } catch (err) {
-          this.$store.dispatch(`${action}Failed`, this.actionName);
+          this.$store.dispatch(`auth/${action}Failed`, this.actionName);
           if (loaderCallback) loaderCallback(err)
         }
       }

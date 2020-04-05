@@ -16,10 +16,11 @@ const store = new Vuex.Store({
     projects: [],
     currentProjectID: "",
     issues: [],
+    projectMembers: [],
   },
   getters: {
     currentProject(state) {
-      return state.projects.find(project => project.projectsUuid == state.currentProjectID)
+      return state.projects.find(project => project.projectsUuid == state.currentProjectID) || ""
     },
   },
   mutations: {
@@ -31,6 +32,9 @@ const store = new Vuex.Store({
     },
     setIssues(state, issues) {
       state.issues = issues
+    },
+    setProjectMembers(state, members) {
+      state.projectMembers = members
     }
   },
   actions: {
@@ -45,12 +49,18 @@ const store = new Vuex.Store({
       commit('setProjects', data)
     },
     setCurrentProject({ commit }, projectId) {
-      commit('setCurrentProject', projectId)
-      this.dispatch('getAllIssues', projectId)
+      commit('setCurrentProject', projectId);
+      this.dispatch('getAllIssues', projectId);
+      this.dispatch('getProjectMember', projectId);
+      this.dispatch('pushRouter', `/projects/${projectId}`)
     },
     async getAllIssues({ commit }, projectId) {
       const { data } = await APIrequest.get(`/projects/${projectId}/issues`);
-      commit('setIssues', data)
+      commit('setIssues', data);
+    },
+    async getProjectMember({ commit }, projectId) {
+      const { data } = await APIrequest.get(`/projects/${projectId}/members`);
+      commit('setProjectMembers', data);
     }
   }
 })

@@ -59,12 +59,17 @@ export default {
 <style lang="scss" scoped>
   table {
     width: 100%;
-    border-bottom: 3px solid black;
+    border-bottom: 2px solid black;
+    thead {
+      th {
+        text-align: left;
+        padding: 0.4rem;
+      }
+    }
     tr {
       border-bottom: 2px solid #ddd;
       td {
-        padding: 0.4rem;
-        text-align: center;
+        padding: 1rem;
         vertical-align: center;
       }
     }

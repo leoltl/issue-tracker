@@ -1,6 +1,6 @@
-import { Message } from 'element-ui';
 import APIrequest from '@/request';
 import { parseJWToken } from '@/utils';
+import { Message } from 'element-ui';
 
 const auth = {
   namespaced: true,
@@ -35,23 +35,32 @@ const auth = {
       window.localStorage.setItem('jwt-token', token)
     },
     async checkAuth({ commit }) {
-      const { data } = await APIrequest.get('/me')
-      if (!data.user) {
-        this.dispatch("pushRouter", { name: "Login" })
+      if (window.localStorage.getItem('jwt-token')) {
+        try {
+          const { data: { user } } = await APIrequest.get('/me')
+          commit('setCurrentUser', user);
+        } catch (e) {
+          this.dispatch("pushRouter", { name: "Login" })
+          window.localStorage.setItem('jwt-token', "");
+          Message({ 
+            message: `Your login session is invalid. Please login and retry.`,
+            type: 'warning',
+            showClose: true,
+          })
+        }
       }
-      commit('setCurrentUser', data.user);
     },
     signinSuccess({ commit }, token) {
       window.localStorage.setItem('jwt-token', token)
       const { name, username, email, role } = parseJWToken(token)
       commit('setCurrentUser', { name, username, email, role });
-      this.dispatch('pushRouter', { name: 'Home' })
+      this.dispatch('pushRouter', { name: 'Home' }, { root: true })
     },
     signupSuccess({ commit }, token) {
       window.localStorage.setItem('jwt-token', token)
       const { name, username, email, role } = parseJWToken(token)
       commit('setCurrentUser', { name, username, email, role });
-      this.dispatch('pushRouter', { name: 'Home' })
+      this.dispatch('pushRouter', { name: 'Home' }, { root: true })
     },
     signupFailed(_,actionName) {
       Message({

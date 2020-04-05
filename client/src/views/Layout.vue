@@ -1,12 +1,19 @@
 <template>
-  <div id="layout">
+  <div id="layout" :class="{default: !isFullScreen}">
     <NavBar />
-    <aside>
-      menu
-    </aside>
-    <main>
-      <router-view />
-    </main>
+    <template v-if="isFullScreen">
+      <main>
+        <router-view />
+      </main>
+    </template>
+    <template v-else>
+      <aside>
+        menu
+      </aside>
+      <main>
+        <router-view />
+      </main>
+    </template>
   </div>
 </template>
 
@@ -16,6 +23,11 @@ export default {
   name: 'Layout',
   components: {
     NavBar,
+  },
+  computed: {
+    isFullScreen() {
+      return this.$route.meta.isFullScreen
+    }
   }
 }
 </script>
@@ -33,7 +45,7 @@ export default {
   h3 { font-size: 3rem }
   h4 { font-size: 2rem }
   h5 { font-size: 1.5rem }
-  #layout {
+  #layout.default {
     display: grid;
     grid-template-areas: "nav nav"
                          "aside main";
@@ -44,11 +56,9 @@ export default {
     }
     aside {
       grid-area: aside;
-      border: 2px solid orange;
     }
     main {
       grid-area: main;
-      border: 2px solid red;
     }
   }
 </style>

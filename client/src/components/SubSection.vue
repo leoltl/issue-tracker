@@ -1,5 +1,5 @@
 <template>
-  <section class='sub-section' :class="`sub-section-${title}`">
+  <section class="sub-section" >
     <div class="sub-section-header">
       <h4>{{ title }}</h4>
     </div>
@@ -17,16 +17,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .sub-section{
-    border: 1px solid black;
+  .sub-section {
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
+    box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
+    border-radius: 5px;
+    overflow: hidden;
     background: white;
   }
   .sub-section-header {
-    background: blue;
-    height: 50px;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    border-bottom: 1px solid black;
   }
   .content {
     max-height: 70vh;
-    padding: 1.25vw;
+    padding: 1.5vw 1.25vw;
   }
 </style>
