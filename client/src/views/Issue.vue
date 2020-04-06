@@ -17,6 +17,7 @@
 import { mapState } from 'vuex';
 import SubSection from '@/components/SubSection';
 export default {
+  name: "Issue",
   components: {
     SubSection
   },
@@ -25,12 +26,12 @@ export default {
       "currentIssue"
     ]),
     issueData() {
-      return Object.entries(this.currentIssue)
+      return Object.entries(this.currentIssue || {})
     }
   },
   created() {
-    if(this.$route.params.ticketId) {
-      this.$store.dispatch('getTicketDetails', this.$route.params.ticketId)
+    if(this.$route.params.issueId) {
+      this.$store.dispatch('getIssueDetails', this.$route.params.issueId)
     }
   }
 }

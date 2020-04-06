@@ -1,5 +1,6 @@
 import IssueService from "../services/issues.service";
 import ProjectService from "../services/projects.service";
+import UserService from "../services/Users/users.service";
 import { Request, Response, NextFunction, Router, Error } from "express";
 
 class IssueController {
@@ -15,9 +16,14 @@ class IssueController {
   }
 
   async get(req: Request, res: Response, next: NextFunction) {
-    const service = new IssueService()
+    const iService = new IssueService()
+    const uService = new UserService()
+    const pService = new ProjectService()
     try {
-      const result = await service.find({ 'issues_uuid': req.params.issueId });
+      const result = await iService.findOne({ 'issues_uuid': req.params.issueId }, true);
+      result.authorId = await uService.findOne({ id: result.authorId });
+      result.assignedTo = await uService.findOne({ id: result.assignedTo });
+      result.projectId = await pService.findOne({ id: result.projectId });
       res.send(result);
     } catch (e) {
       next(e)

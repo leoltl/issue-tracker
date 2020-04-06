@@ -25,6 +25,14 @@ class Project extends ProjectModel {
     return super.update(project, id);
   }
 
+  public async find(obj, displayProtectedFields: boolean=false) {
+    return super.find(obj, displayProtectedFields);
+  }
+
+  public async findOne(obj, displayProtectedFields: boolean=false) {
+    return super.findOne(obj, displayProtectedFields);
+  }
+
   public async findAll() {
     return super.findAll();
   }

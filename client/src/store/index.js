@@ -66,10 +66,10 @@ const store = new Vuex.Store({
       const { data } = await APIrequest.get(`/projects/${projectId}/members`);
       commit('setProjectMembers', data);
     },
-    async getTicketDetails({ commit }, ticketId) {
-      const { data: [ issue ] } = await APIrequest.get(`/issues/${ticketId}`);
+    async getIssueDetails({ commit }, ticketId) {
+      const { data: issue } = await APIrequest.get(`/issues/${ticketId}`);
       commit('setCurrentIssue', issue);
-      this.dispatch('pushRouter', `/tickets/${ticketId}`)
+      this.dispatch('pushRouter', `/issues/${ticketId}`)
     }
   }
 })

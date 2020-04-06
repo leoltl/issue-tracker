@@ -29,8 +29,12 @@ class Issue extends IssueModel {
     return super.update(issue, id);
   }
 
-  public async find(obj) {
-    return super.find(obj)
+  public async find(obj, displayProtectedFields?) {
+    return super.find(obj, displayProtectedFields)
+  }
+
+  public async findOne(obj, displayProtectedFields?) {
+    return super.findOne(obj, displayProtectedFields)
   }
 
   public async findAll() {

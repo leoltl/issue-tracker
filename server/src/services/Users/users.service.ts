@@ -77,6 +77,10 @@ class UserService extends UserModel {
     return super.find(obj, displayProtectedFields);
   }
 
+  public async findOne(obj, displayProtectedFields: boolean=false) {
+    return super.findOne(obj, displayProtectedFields);
+  }
+
   public async signIn(username: string, password:string): Promise<user|boolean>{
     const user = await this.findOne({ username }, true)
     const match = await bcrypt.compare(password, user.password)

@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Projects from '@/views/Projects.vue'
 import Project from '@/views/Project.vue'
-import Ticket from '@/views/Ticket.vue'
+import Issue from '@/views/Issue.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 
 Vue.use(VueRouter)
@@ -35,10 +35,10 @@ const routes = [
     ],
   },
   {
-    path: '/tickets/:ticketId',
-    name: "Ticket",
+    path: '/issues/:issueId',
+    name: "Issue",
     meta: { restricted: true },
-    component: Ticket
+    component: Issue
   },
   {
     path: '*',

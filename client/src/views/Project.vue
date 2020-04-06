@@ -56,11 +56,11 @@ export default {
       return ISSUES_COLUMNS
     },
     issueActions() {
-      function showTicketDetails(dataRow) {
-        this.$store.dispatch('getTicketDetails', dataRow.issuesUuid)
+      function showIssueDetails(dataRow) {
+        this.$store.dispatch('getIssueDetails', dataRow.issuesUuid)
       }
       return [
-        { name: "Details" , displayAs: " ", action: showTicketDetails.bind(this) },
+        { name: "Details" , displayAs: " ", action: showIssueDetails.bind(this) },
       ];
     },
     memberColumns() {
