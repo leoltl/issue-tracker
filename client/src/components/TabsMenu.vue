@@ -1,37 +1,13 @@
 <template>
   <div class="tabs-menu">
-    <Tab 
-      v-for="project in projects" 
-      :project="project" 
-      :key="project.projectsUuid"
-      :selected="project.projectsUuid == currentProjectID"
-      @click.native="setCurrentProject(project.projectsUuid)"
-    />
+    <slot />
     <div class="plus">+</div>
   </div>
 </template>
 
 <script>
-import Tab from '@/components/Tab';
-import { mapState, mapActions } from 'vuex';
-
-// const { mapState, mapActions } = createNamespacedHelpers('base')
 export default {
   name: "TabsMenu",
-  components: {
-    Tab
-  },
-  computed: {
-    ...mapState([
-      'currentProjectID',
-      'projects'
-    ])
-  },
-  methods: {
-    ...mapActions([
-      'setCurrentProject'
-    ])
-  }
 }
 </script>
 

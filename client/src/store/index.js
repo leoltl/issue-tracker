@@ -17,6 +17,7 @@ const store = new Vuex.Store({
     currentProjectID: "",
     issues: [],
     projectMembers: [],
+    currentIssue: null,
   },
   getters: {
     currentProject(state) {
@@ -35,7 +36,10 @@ const store = new Vuex.Store({
     },
     setProjectMembers(state, members) {
       state.projectMembers = members
-    }
+    },
+    setCurrentIssue(state, issue) {
+      state.currentIssue = issue
+    },
   },
   actions: {
     pushRouter(_, path) {
@@ -61,6 +65,11 @@ const store = new Vuex.Store({
     async getProjectMember({ commit }, projectId) {
       const { data } = await APIrequest.get(`/projects/${projectId}/members`);
       commit('setProjectMembers', data);
+    },
+    async getTicketDetails({ commit }, ticketId) {
+      const { data: [ issue ] } = await APIrequest.get(`/issues/${ticketId}`);
+      commit('setCurrentIssue', issue);
+      this.dispatch('pushRouter', `/tickets/${ticketId}`)
     }
   }
 })

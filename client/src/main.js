@@ -22,6 +22,9 @@ router.beforeResolve((to, from, next) => {
     next({ name: 'Login', wantedPath: to.fullPath })
     return 
   }
+  if (to.name == "Login" && isAuthenticated) {
+    next({ name: "Home" })
+  }
   next();
 })
 

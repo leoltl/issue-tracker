@@ -37,7 +37,6 @@ const MEMBERS_COLUMNS = [
   { name: "email", displayAs: "Email"}, 
   { name: "role", displayAs: "Role", dataFilter: displayRole}
 ];
-// const { mapState } = createNamespacedHelpers('base')
 export default {
   name: "Projects",
   components: {
@@ -57,9 +56,11 @@ export default {
       return ISSUES_COLUMNS
     },
     issueActions() {
-      function TONAME(dataRow) {console.log('action!', this, dataRow.issuesUuid)}
+      function showTicketDetails(dataRow) {
+        this.$store.dispatch('getTicketDetails', dataRow.issuesUuid)
+      }
       return [
-        { name: "Details" , displayAs: " ", action: TONAME.bind(this) },
+        { name: "Details" , displayAs: " ", action: showTicketDetails.bind(this) },
       ];
     },
     memberColumns() {
@@ -76,6 +77,8 @@ export default {
 
 <style lang="scss" scoped>
   .project-main {
+    height: 100%;
+    background-color: #eee;
     margin: 2vh 2.5vw;
     display: grid;
     grid-template: "tickets details"

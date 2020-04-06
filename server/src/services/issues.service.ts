@@ -29,6 +29,10 @@ class Issue extends IssueModel {
     return super.update(issue, id);
   }
 
+  public async find(obj) {
+    return super.find(obj)
+  }
+
   public async findAll() {
     return super.findAll();
   }
@@ -39,6 +43,10 @@ class Issue extends IssueModel {
 
   public async findAllByProjectId(projectId: number) {
     return super.findAllByProjectId(projectId);
+  }
+
+  public async findIdByUUID(uuid) {
+    return super.findIdByUUID(uuid);
   }
 }
 

@@ -7,9 +7,7 @@ class IssueController {
     try {
       const { projectId } = req.params
       const { id: dbID } = await (new ProjectService()).findIdByUUID(projectId);
-      console.log(dbID);
       const result = await (new IssueService()).findAllByProjectId(dbID);
-      console.log(result);
       res.send(result);
     } catch (e) {
       next(e)
@@ -17,9 +15,9 @@ class IssueController {
   }
 
   async get(req: Request, res: Response, next: NextFunction) {
+    const service = new IssueService()
     try {
-      const { issueId } = req.params
-      const result = await (new IssueService()).findById(issueId);
+      const result = await service.find({ 'issues_uuid': req.params.issueId });
       res.send(result);
     } catch (e) {
       next(e)

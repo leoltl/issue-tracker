@@ -1,4 +1,8 @@
 DROP TABLE IF EXISTS issues CASCADE;
+DROP TYPE IF EXISTS user_role;
+
+CREATE TYPE issue_status AS ENUM('open', 'closed');
+CREATE TYPE issue_priority AS ENUM('low', 'medium', 'high', 'severe');
 
 CREATE TABLE issues (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -6,8 +10,11 @@ CREATE TABLE issues (
   description TEXT,
   project_id INT REFERENCES projects(id) ON DELETE CASCADE,
   author_id INT REFERENCES users(id) ON DELETE CASCADE,
+  assigned_to INT REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT NOW(),
-  issues_uuid uuid DEFAULT gen_random_uuid()
+  issues_uuid uuid DEFAULT gen_random_uuid(),
+  issue_status issue_status NOT NULL DEFAULT 'open',
+  issue_priority issue_priority
 );
 
 INSERT INTO issues (title, description, project_id, author_id) VALUES ('my first issue', 'first issue recorded', 1, 3);

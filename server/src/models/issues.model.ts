@@ -63,7 +63,21 @@ class Issue extends Model {
         throw e
       }
     }
-    
+  }
+
+  protected async find(obj) {
+    var conditions = Object.entries(obj);
+    const whereClause = conditions.map(([column, value]) => `${column} = '${value}'`).join(' AND ')
+    try {
+      const result = await this.pool.query(`
+      SELECT * FROM issues
+      JOIN users ON issues.author_id = users.id
+      WHERE ${whereClause}
+      `)
+      return this._stripProtectedFields(result, ['password'])
+    } catch (e) {
+      throw e
+    }
   }
 
   protected async update(issue: issue, id) {
@@ -82,7 +96,10 @@ class Issue extends Model {
   }
 
   protected async findAllByProjectId(projectId: number) {
-    const result = await this.pool.query(`SELECT * from ${this.table} JOIN users ON ${this.table}.author_id = users.id WHERE project_id = $1`, [projectId])
+    const result = await this.pool.query(`
+      SELECT * from ${this.table} 
+      JOIN users ON ${this.table}.author_id = users.id 
+      WHERE project_id = $1`, [projectId])
     if (!result) throw new HTTP400Error("Record not found")
     return this._stripProtectedFields(result, ['password'])
   }

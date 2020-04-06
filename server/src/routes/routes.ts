@@ -16,8 +16,8 @@ router.get('/projects/:projectId/members', ProjectController.getProjectMembers);
 
 router.get('/projects/:projectId/issues', IssueController.getAll);
 router.post('/projects/:projectId/issues', IssueController.create);
-router.get('/projects/:projectId/issues/:issueId', IssueController.get);
-router.put('/projects/:projectId/issues/:issueId', IssueController.update);
+router.get('/issues/:issueId', IssueController.get);
+router.put('/issues/:issueId', IssueController.update);
 
 router.get('/u/all', UserController.getAll);
 router.get('/u/:username', UserController.get);
