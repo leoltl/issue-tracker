@@ -2,31 +2,51 @@
   <div class="ticket">
     <section class="ticket-main">
       <SubSection :title="'Ticket details'" class="sub-section-details">
-        <div v-for="[title, data] of issueData" class="entry" :key="title">
-          <span class="title">{{ title }}:</span> <span class="value">{{ data }}</span>
-        </div>
+        <DataList
+          :data="issueData"
+          :rows="issueRow"
+        />
       </SubSection>
       <SubSection :title="'Ticket comments'" class="sub-section-comment">
-        
+        <!-- TODO -->
       </SubSection>
     </section>
   </div>
 </template>
 
+
+
 <script>
+import { displayDate, displayStatus, displayPriority } from '@/filters';
 import { mapState } from 'vuex';
 import SubSection from '@/components/SubSection';
+import DataList from '@/components/DataList';
+
+const ISSUE_ROW = [
+  { name: "title", displayAs: "Title" }, 
+  { name: "description", displayAs: "Description" }, 
+  { name: "createdAt", displayAs: "Created At", dataFilter: displayDate }, 
+  { name: "authorId", displayAs: "Reported By", dataFunction: (data) => data.authorId.name },
+  { name: "assignedTo", displayAs: "Assigned To", dataFunction: (data) => data.assignedTo.name },
+  { name: "issueStatus", displayAs: "Status" , dataFilter: displayStatus},
+  { name: "issuePriority", displayAs: "Priority", dataFilter: displayPriority },
+]
+
 export default {
   name: "Issue",
   components: {
-    SubSection
+    SubSection,
+    DataList
   },
   computed: {
     ...mapState([
       "currentIssue"
     ]),
     issueData() {
-      return Object.entries(this.currentIssue || {})
+      return this.currentIssue || {}
+    },
+    issueRow() {
+      return ISSUE_ROW;
     }
   },
   created() {
@@ -54,12 +74,6 @@ export default {
   }
   .sub-section-comment {
     grid-area: comment;
-  }
-  .entry {
-    border-bottom: 2px solid #ccc;
-    padding: 1rem 0;
-    display: flex;
-    justify-content: space-between;
   }
 }
 </style>

@@ -8,6 +8,18 @@ export function displayRole(role) {
   return DB_ROLE[role]
 }
 
+export function displayStatus(status) {
+  const DB_STATUS = {open: 'Open', close: "Close"}
+  return DB_STATUS[status]
+}
+
+export function displayPriority(priority) {
+  if (priority == null) return "Unspecified"
+  const DB_PRIORITY = {low: "Low", medium: "Medium", high: "High", severe: "Severe"}
+  return DB_PRIORITY[priority]
+}
+
+
 var filters = { displayDate }
 
 function installFilters (vue) {

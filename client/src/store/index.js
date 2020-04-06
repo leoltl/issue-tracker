@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import { Message } from 'element-ui';
+import { Message } from 'element-ui';
 import { sync } from 'vuex-router-sync'
 import router from '@/router'
 import APIrequest from '@/request';
@@ -67,9 +67,15 @@ const store = new Vuex.Store({
       commit('setProjectMembers', data);
     },
     async getIssueDetails({ commit }, ticketId) {
-      const { data: issue } = await APIrequest.get(`/issues/${ticketId}`);
-      commit('setCurrentIssue', issue);
-      this.dispatch('pushRouter', `/issues/${ticketId}`)
+      try {
+        const { data: issue } = await APIrequest.get(`/issues/${ticketId}`);
+        commit('setCurrentIssue', issue);
+        this.dispatch('pushRouter', `/issues/${ticketId}`)
+      } catch(err) {
+        Message({
+          message: "TOIMPROVE: NETWORK REQUEST FAILED"
+        })
+      }
     }
   }
 })

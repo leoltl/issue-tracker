@@ -4,14 +4,14 @@
       Name: {{ currentProject.name }}
     </SubSection>
     <SubSection :title="'Tickets'" class="sub-section-issues">
-      <Table 
+      <DataTable 
         :data="issues" 
         :definedColumns="issueColumns" 
         :withAction="issueActions"
       />
     </SubSection>
     <SubSection :title="'Project members'" class="sub-section-users">
-      <Table 
+      <DataTable 
         :data="projectMembers"
         :definedColumns="memberColumns"
       />
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Table from '@/components/Table';
+import DataTable from '@/components/DataTable';
 import SubSection from '@/components/SubSection';
 import { mapState, mapGetters } from 'vuex';
 import { displayDate, displayRole } from '@/filters';
@@ -41,7 +41,7 @@ export default {
   name: "Projects",
   components: {
     SubSection,
-    Table,
+    DataTable,
    },
   computed: {
     ...mapState([

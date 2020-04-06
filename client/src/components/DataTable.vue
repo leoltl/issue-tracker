@@ -30,7 +30,7 @@
 <script>
 import CustomButton from '@/components/Button';
 export default {
-  name: "Table",
+  name: "DataTable",
   components: { CustomButton },
   props: {
     definedColumns: {
