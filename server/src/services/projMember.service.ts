@@ -6,7 +6,7 @@ interface projMember {
   userId: Number
 }
 
-class projMember extends ProjMemberModel {
+class ProjMember extends ProjMemberModel {
   constructor(projMember: projMember=null) {
     super();
   }
@@ -24,12 +24,12 @@ class projMember extends ProjMemberModel {
   }
 
   public async create(projMember: projMember) {
-    this.isValid(projMember);
+    // this.isValid(projMember);
     return super.create(projMember);
   }
   
   public async update(projMember: projMember) {
-    this.isValid(projMember);
+    // this.isValid(projMember);
     return super.update(projMember);
   }
 
@@ -50,4 +50,4 @@ class projMember extends ProjMemberModel {
   }
 }
 
-export default projMember;
+export default ProjMember;

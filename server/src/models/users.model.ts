@@ -42,7 +42,7 @@ class UserModel extends Model {
       role: {
         colName: 'role',
         validator: (val) => {
-          return val && [Roles.developer, Roles.productManager, Roles.tester].includes(val)
+          return val && Object.values(Roles).includes(val)
         }
       },
       usersUuid: {
@@ -101,6 +101,40 @@ class UserModel extends Model {
     try {
       const result = await this.pool.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
       return this._stripProtectedFields(result);
+    } catch (e) {
+      if (e.name == 'Validator Rejected') {
+        throw new HTTP400Error(e.message)
+      } else {
+        throw e
+      }
+    }
+  }
+
+  protected async find(obj: any, displayProtectedFields: boolean=false) {
+    try {
+      if (Object.keys(obj).includes('role')) {
+        this.validate(obj, ["role"])
+        return await super.find(obj, displayProtectedFields)
+      }
+      return await super.find(obj, displayProtectedFields)
+    } catch (e) {
+      if (e.name == 'Validator Rejected') {
+        throw new HTTP400Error(e.message)
+      } else {
+        throw e
+      }
+    }
+  }
+
+  protected async findOne(obj: any, displayProtectedFields: boolean=false) {
+    try {
+      if (Object.keys(obj).includes('role')) {
+        this.validate(obj, ["role"])
+        var [user] = await super.find(obj, displayProtectedFields)
+        return user
+      }
+      var [user] = await super.find(obj, displayProtectedFields)
+      return user
     } catch (e) {
       if (e.name == 'Validator Rejected') {
         throw new HTTP400Error(e.message)

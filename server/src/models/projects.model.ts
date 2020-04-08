@@ -27,7 +27,7 @@ class Project extends Model {
     super({ table: "projects", columns })
   }
 
-  async create(project: project) {
+  async create(project: project, options?: any) {
     try {
       this.validate(project, ["name"])
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);

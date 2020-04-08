@@ -53,7 +53,12 @@ abstract class Model {
   protected async findOne(obj: any, displayProtectedFields: boolean=false) {
     var conditions = Object.entries(obj);
     // TODO: add more flexiblity
-    const whereClause = conditions.map((condition) => `${condition[0]} = '${condition[1]}'`).join(' AND ')
+    const whereClause = conditions.map(([columnName, condition]) => {
+      if (Array.isArray(condition)) {
+        return condition.map(condition => `${columnName} = ${condition}`).join(' OR ')
+      }
+      return `${columnName} = '${condition}'`
+    }).join(' AND ')
     
     const result = await pool.query(`SELECT * FROM ${this.table} WHERE ${whereClause} LIMIT 1`)
     if (result.length == 0) throw new HTTP400Error("Record not found")
@@ -65,8 +70,12 @@ abstract class Model {
   protected async find(obj: any, displayProtectedFields: boolean=false) {
     var conditions = Object.entries(obj);
     // TODO: add more flexiblity
-    const whereClause = conditions.map((condition) => `${condition[0]} = '${condition[1]}'`).join(' AND ')
-    
+    const whereClause = conditions.map(([columnName, condition]) => {
+      if (Array.isArray(condition)) {
+        return condition.map(condition => `${columnName} = ${condition}`).join(' OR ')
+      }
+      return `${columnName} = '${condition}'`
+    }).join(' AND ')
     const result = await pool.query(`SELECT * FROM ${this.table} WHERE ${whereClause}`)
     if (result.length == 0) throw new HTTP400Error("Record not found")
     if (displayProtectedFields) return result;
@@ -117,9 +126,9 @@ abstract class Model {
     return result[0];
   }
 
-  protected abstract create(obj: any): Promise<Array<any> | any>
+  protected abstract create(obj: any, options?: any): Promise<Array<any> | any>
 
-  protected abstract update(obj: any, id: Number): Promise<Array<any> | any>
+  protected abstract update(obj: any, options?: any): Promise<Array<any> | any>
 
 
   protected _stripProtectedFields(records: Array<any> | any, userDefined: Array<string>=[]) {

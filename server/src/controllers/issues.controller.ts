@@ -22,8 +22,9 @@ class IssueController {
     try {
       const result = await iService.findOne({ 'issues_uuid': req.params.issueId }, true);
       result.authorId = await uService.findOne({ id: result.authorId });
-      result.assignedTo = await uService.findOne({ id: result.assignedTo });
+      result.assignedTo = result.assignedTo && await uService.findOne({ id: result.assignedTo }) || "";
       result.projectId = await pService.findOne({ id: result.projectId });
+    
       res.send(result);
     } catch (e) {
       next(e)

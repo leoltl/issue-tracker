@@ -1,7 +1,7 @@
 import Model from "./base";
 import { HTTP400Error } from '../lib/httpErrors'
 
-interface projMember {
+interface membership {
   projectId: Number,
   userId: Number
 }
@@ -18,10 +18,10 @@ class ProjMember extends Model {
         validator: (val) => val && typeof val == "number",
       },
     }
-    super({ table: "issues", columns })
+    super({ table: "project_members", columns })
   }
 
-  async find(projMember: projMember) {
+  async find(projMember: membership) {
     const { projectId, userId } = projMember;
     const res = await this.pool.query(`SELECT * FROM ${this.table} WHERE project_id = $1 AND user_id = $2`, [projectId, userId])
     return res;
@@ -37,13 +37,15 @@ class ProjMember extends Model {
     return res;
   }
 
-  async create(projMember: projMember){
+  async create(projMember: membership){
     var [ columns, values, params ] = this.parseColumnForCreateUpdate(projMember);
+    const prevRecord = await this.find(projMember)
+    if (prevRecord.length) throw Error ('Membership of project has already been created.')
     const res = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
     return res
   }
 
-  async update(projMember: projMember) {
+  async update(projMember: membership) {
 
   }
 

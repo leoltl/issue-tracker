@@ -28,7 +28,6 @@ class UserController {
     try {
       const [ user ] = await new UserService().create(newUser);
       const token = await generateJWToken(user)
-      console.log(user, token)
       res.status(200).send(token)
     } catch (e) {
       next(e)

@@ -86,7 +86,7 @@ class UserService extends UserModel {
   }
 
   public async signIn(username: string, password:string): Promise<user|boolean>{
-    const user = await this.findOne({ username }, true)
+    const [ user ] = await this.findOne({ username }, true)
     const match = await bcrypt.compare(password, user.password)
     return match ? this._stripProtectedFields(user) : false
   }

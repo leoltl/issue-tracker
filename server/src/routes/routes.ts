@@ -9,7 +9,8 @@ import roles from '../middlewares/authorization/roles';
 
 const router = express.Router();
 router.get('/projects', ProjectController.getAll);
-router.post('/projects', authorize([roles.admin, roles.productManager]),ProjectController.create);
+// router.post('/projects', authorize([roles.admin, roles.productManager]),ProjectController.create);
+router.post('/projects', ProjectController.create);
 router.get('/projects/:projectId', ProjectController.get);
 router.put('/projects/:projectId', authorize([roles.admin, roles.productManager]), ProjectController.update);
 router.get('/projects/:projectId/members', ProjectController.getProjectMembers);
