@@ -8,21 +8,26 @@
     </template>
     <template v-else>
       <aside>
-        menu
+        <SideMenu />
       </aside>
       <main>
         <router-view />
       </main>
     </template>
+    <ModalRoot />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar'
+import SideMenu from '@/components/SideMenu'
+import ModalRoot from '@/views/ModalRoot'
 export default {
   name: 'Layout',
   components: {
     NavBar,
+    SideMenu,
+    ModalRoot,
   },
   computed: {
     isFullScreen() {

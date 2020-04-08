@@ -19,7 +19,7 @@
 export default {
   name: "DataList",
   props: {
-    data: Array,
+    data: Object,
     rows: Array,
   }
 }

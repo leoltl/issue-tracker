@@ -9,7 +9,10 @@ const auth = {
   },
   getters: {
     isAuthenticated(state) {
-      return state.user != null 
+      return state.user != null;
+    },
+    userId(state) {
+      return state.user.usersUuid;
     }
   },
   mutations: {
@@ -52,14 +55,14 @@ const auth = {
     },
     signinSuccess({ commit }, token) {
       window.localStorage.setItem('jwt-token', token)
-      const { name, username, email, role } = parseJWToken(token)
-      commit('setCurrentUser', { name, username, email, role });
+      const { name, username, email, role, usersUuid } = parseJWToken(token)
+      commit('setCurrentUser', { name, username, email, role, usersUuid });
       this.dispatch('pushRouter', { name: 'Home' }, { root: true })
     },
     signupSuccess({ commit }, token) {
       window.localStorage.setItem('jwt-token', token)
-      const { name, username, email, role } = parseJWToken(token)
-      commit('setCurrentUser', { name, username, email, role });
+      const { name, username, email, role, usersUuid } = parseJWToken(token)
+      commit('setCurrentUser', { name, username, email, role, usersUuid });
       this.dispatch('pushRouter', { name: 'Home' }, { root: true })
     },
     signupFailed(_,actionName) {

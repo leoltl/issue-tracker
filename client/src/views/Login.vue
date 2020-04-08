@@ -15,7 +15,7 @@
 
 <script>
   import { ref, computed } from '@vue/composition-api';
-  import AccountForm from '@/components/AccountForm.vue';
+  import AccountForm from '@/components/Forms/AccountForm.vue';
   export default {
     name: 'Login',
     components: {

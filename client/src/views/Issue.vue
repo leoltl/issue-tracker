@@ -3,6 +3,7 @@
     <section class="ticket-main">
       <SubSection :title="'Ticket details'" class="sub-section-details">
         <DataList
+          v-if="currentIssue"
           :data="issueData"
           :rows="issueRow"
         />
@@ -18,10 +19,11 @@
 
 <script>
 import { displayDate, displayStatus, displayPriority } from '@/filters';
-import { mapState } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 import SubSection from '@/components/SubSection';
 import DataList from '@/components/DataList';
 
+const { mapState } = createNamespacedHelpers('issue')
 const ISSUE_ROW = [
   { name: "title", displayAs: "Title" }, 
   { name: "description", displayAs: "Description" }, 
@@ -43,7 +45,7 @@ export default {
       "currentIssue"
     ]),
     issueData() {
-      return this.currentIssue || {}
+      return this.currentIssue
     },
     issueRow() {
       return ISSUE_ROW;
@@ -51,7 +53,7 @@ export default {
   },
   created() {
     if(this.$route.params.issueId) {
-      this.$store.dispatch('getIssueDetails', this.$route.params.issueId)
+      this.$store.dispatch('issue/getIssueDetails', this.$route.params.issueId)
     }
   }
 }

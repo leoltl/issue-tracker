@@ -1,23 +1,22 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { Message } from 'element-ui';
 import { sync } from 'vuex-router-sync'
 import router from '@/router'
 import APIrequest from '@/request';
 import auth from './modules/auth';
+import issue from './modules/issue';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
     auth,
+    issue,
   },
   state: {
     projects: [],
     currentProjectID: "",
-    issues: [],
     projectMembers: [],
-    currentIssue: null,
   },
   getters: {
     currentProject(state) {
@@ -31,14 +30,8 @@ const store = new Vuex.Store({
     setCurrentProject(state, id) {
       state.currentProjectID = id
     },
-    setIssues(state, issues) {
-      state.issues = issues
-    },
     setProjectMembers(state, members) {
       state.projectMembers = members
-    },
-    setCurrentIssue(state, issue) {
-      state.currentIssue = issue
     },
   },
   actions: {
@@ -54,29 +47,14 @@ const store = new Vuex.Store({
     },
     setCurrentProject({ commit }, projectId) {
       commit('setCurrentProject', projectId);
-      this.dispatch('getAllIssues', projectId);
+      this.dispatch('issue/getAllIssues', projectId);
       this.dispatch('getProjectMember', projectId);
       this.dispatch('pushRouter', `/projects/${projectId}`)
-    },
-    async getAllIssues({ commit }, projectId) {
-      const { data } = await APIrequest.get(`/projects/${projectId}/issues`);
-      commit('setIssues', data);
     },
     async getProjectMember({ commit }, projectId) {
       const { data } = await APIrequest.get(`/projects/${projectId}/members`);
       commit('setProjectMembers', data);
     },
-    async getIssueDetails({ commit }, ticketId) {
-      try {
-        const { data: issue } = await APIrequest.get(`/issues/${ticketId}`);
-        commit('setCurrentIssue', issue);
-        this.dispatch('pushRouter', `/issues/${ticketId}`)
-      } catch(err) {
-        Message({
-          message: "TOIMPROVE: NETWORK REQUEST FAILED"
-        })
-      }
-    }
   }
 })
 
