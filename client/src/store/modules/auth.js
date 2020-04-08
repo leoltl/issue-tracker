@@ -1,6 +1,7 @@
-import APIrequest from '@/request';
 import { parseJWToken } from '@/utils';
 import { Message } from 'element-ui';
+
+import API from '@/api';
 
 const auth = {
   namespaced: true,
@@ -34,15 +35,15 @@ const auth = {
       }
     },
     async refreshToken() {
-      const { data: token } = await APIrequest.get('/refresh-token')
+      const { data: token } = await API.auth.refreshToken();
       window.localStorage.setItem('jwt-token', token)
     },
     async checkAuth({ commit }) {
       if (window.localStorage.getItem('jwt-token')) {
         try {
-          const { data: { user } } = await APIrequest.get('/me')
+          const { data: { user } } = await API.auth.checkAuth()
           commit('setCurrentUser', user);
-        } catch (e) {
+        } catch {
           this.dispatch("pushRouter", { name: "Login" })
           window.localStorage.setItem('jwt-token', "");
           Message({ 
@@ -51,6 +52,33 @@ const auth = {
             showClose: true,
           })
         }
+      }
+    },
+    signOut({ commit }) {
+      window.localStorage.setItem('jwt-token', "");
+      if (this.state.user) { 
+        commit('setCurrentUser', null)
+      }
+      this.dispatch('pushRouter', { name: 'Login' }, { root: true })
+    },
+    async signIn(_, { formData, loaderCallback }) {
+      try {
+        const { data: token } = await API.auth.signIn(formData);
+        this.dispatch('auth/signinSuccess', token)
+      } catch (e) {
+        this.dispatch('auth/signinFailed')
+      } finally {
+        loaderCallback && loaderCallback();
+      }
+    },
+    async signUp(_, { formData, loaderCallback }) {
+      try {
+        const { data: token } = await API.auth.signUp(formData);
+        this.dispatch('auth/signupSuccess', token)
+      } catch (e) {
+        this.dispatch('auth/signupFailed')
+      } finally {
+        loaderCallback && loaderCallback();
       }
     },
     signinSuccess({ commit }, token) {
@@ -65,16 +93,16 @@ const auth = {
       commit('setCurrentUser', { name, username, email, role, usersUuid });
       this.dispatch('pushRouter', { name: 'Home' }, { root: true })
     },
-    signupFailed(_,actionName) {
+    signupFailed() {
       Message({
-        message: `${actionName} Failed. Please try again.`,
+        message: `Sign Up Failed. Please try again.`,
         type: 'warning',
         showClose: true,
       })
     },
-    signinFailed(_,actionName) {
+    signinFailed() {
       Message({
-        message: `${actionName} Failed. Please try again.`,
+        message: `Sign In Failed. Please try again.`,
         type: 'warning',
         showClose: true,
       })
