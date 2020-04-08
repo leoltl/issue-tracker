@@ -22,10 +22,11 @@
 <script>
 import DataTable from '@/components/DataTable';
 import SubSection from '@/components/SubSection';
-import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 import { displayDate, displayRole } from '@/filters';
 
 const { mapState: mapIssueState } = createNamespacedHelpers('issue');
+const { mapState: mapProjectState, mapGetters: mapProjectGetters } = createNamespacedHelpers('project')
 const ISSUES_COLUMNS = [
   { name: "title", displayAs: "Title" }, 
   { name: "description", displayAs: "Description" }, 
@@ -45,14 +46,14 @@ export default {
     DataTable,
    },
   computed: {
-    ...mapState([
+    ...mapProjectState([
       'currentProjectID',
       'projectMembers'
     ]),
     ...mapIssueState([
       'issues',
     ]),
-    ...mapGetters([
+    ...mapProjectGetters([
       "currentProject"
     ]),
     issueColumns() {
@@ -72,7 +73,7 @@ export default {
   },
   created() {
     if(this.$route.params.projectId) {
-      this.$store.dispatch('setCurrentProject', this.$route.params.projectId)
+      this.$store.dispatch('project/setCurrentProject', this.$route.params.projectId)
     }
   }
 }

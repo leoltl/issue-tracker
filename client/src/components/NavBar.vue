@@ -16,11 +16,6 @@
 
 <script>
 export default {
-  computed: {
-    username() {
-      return this.$store.state.user? this.$store.state.user.name : ""
-    }
-  }
 }
 </script>
 
@@ -30,6 +25,7 @@ nav {
   padding: 0 2vw;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   > .logo {
     color: #fff;
     display: flex;

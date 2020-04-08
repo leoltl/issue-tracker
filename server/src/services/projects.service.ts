@@ -58,6 +58,7 @@ class Project extends ProjectModel {
     if (obj.user) {
       const { id: userId } = await new UsersService().findIdByUUID(obj.user.usersUuid);
       const projects = await new ProjMemberService().findByUserId(userId);
+      if (!projects.length) return []
       const projectIds = projects.map(project => project.projectId);
       return super.find({ id: projectIds });
     } else {

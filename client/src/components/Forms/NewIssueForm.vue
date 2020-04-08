@@ -18,9 +18,9 @@
 </template>
 
 <script>
-  import APIrequest from '@/request';
   import { InputGeneric, InputSelect } from './FormFields';
   import CustomButton from '@/components/Button'
+  import ModalBus from '@/Bus'
   export default {
     name: "AccountForm",
     props:["isSignUp"],
@@ -44,28 +44,22 @@
         const authorId = this.$store.getters['auth/userId']
         const projectId = this.form.projectId
         
-        let data = {
+        let formData = {
           title: this.form.title,
           description: this.form.description,
           issuePriority: this.form.issuePriority,
           authorId,
         }
-        
-        // TODO: refactor fetch login into store
-        try {
-          const res = await APIrequest.post(`/projects/${projectId}/issues`, { data })
-          this.$store.dispatch(`TODO`, res.data);
-          if (loaderCallback) loaderCallback()
-        } catch (err) {
-          this.$store.dispatch(`TODO`, this.actionName);
-          if (loaderCallback) loaderCallback(err)
-        } finally {
-          this.form = {
-            title: '',
-            description: '',
-            issuePriority: ''
-          }
+
+        this.$store.dispatch('issue/createIssue', { formData, projectId, loaderCallback })
+
+        this.form = {
+          title: '',
+          description: '',
+          issuePriority: ''
         }
+
+        ModalBus.$emit('close')
       }
     },
     computed: {
@@ -73,7 +67,7 @@
         return ['low', 'medium', 'high', 'severe'];
       },
       projectOptions() {
-        return this.$store.state.projects.map(project => {
+        return this.$store.state.project.projects.map(project => {
           return {
             name: project.name,
             value: project.projectsUuid

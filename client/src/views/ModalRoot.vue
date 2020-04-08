@@ -21,6 +21,11 @@ export default {
       this.title = title
       this.props = props
     })
+     ModalBus.$on('close', () => {
+      this.component = null
+      this.title = ''
+      this.props = null
+    })
     document.addEventListener('keyup', this.handleKeyup)
   },
   beforeDestroy () {

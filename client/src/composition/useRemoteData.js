@@ -1,4 +1,4 @@
-import APIrequest from '@/request';
+import APIrequest from '@/api/request';
 import { reactive, toRefs } from '@vue/composition-api'
 
 function useRemoteData(path, options={}) {

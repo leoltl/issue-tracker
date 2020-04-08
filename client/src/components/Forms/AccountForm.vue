@@ -21,7 +21,6 @@
 </template>
 
 <script>
-  import APIrequest from '@/request';
   import { InputEmail, InputName, InputPassword, InputUsername } from './FormFields';
   import CustomButton from '@/components/Button'
   export default {
@@ -47,36 +46,26 @@
     },
     methods: {
        async handleSubmit(e, loaderCallback) {
-        let data;
-        const TEMP_ROLE = 'tester'
+        const NEW_ACCOUNT_DEFAULT_ROLE = 'tester'
         if (this.isSignUp) {
-          data = {
+          const data = {
             username: this.form.username,
             password: this.form.password,
             password2: this.form.password2,
             email: this.form.email,
             name: this.form.name,
-            role: TEMP_ROLE
+            role: NEW_ACCOUNT_DEFAULT_ROLE
           }
+          this.$store.dispatch('auth/signUp', { formData: data, loaderCallback })
         } else {
-          data = {
+          const data = {
             username: this.form.username,
             password: this.form.password,
           }
-        }
-        const action = this.isSignUp ? 'signup' : 'signin'
-        // TODO: refactor fetch login into store
-        try {
-          const res = await APIrequest.post(`/${action}`, { data })
-          this.$store.dispatch(`auth/${action}Success`, res.data);
-          if (loaderCallback) loaderCallback()
-        } catch (err) {
-          this.$store.dispatch(`auth/${action}Failed`, this.actionName);
-          if (loaderCallback) loaderCallback(err)
-        } finally {
-          this.form.password = ""
-          this.form.password2 = ""
-        }
+          this.$store.dispatch('auth/signIn', { formData: data, loaderCallback })
+        }   
+
+        this.form.password = this.form.password2 = ""
       }
     },
     computed: {

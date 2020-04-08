@@ -16,9 +16,10 @@
 <script>
 import TabsMenu from '@/components/TabsMenu';
 import Tab from '@/components/Tab';
-import ModalBus from '@/Bus';
-import { mapState, mapActions } from 'vuex';
 import NewProjectForm from '../components/Forms/NewProjectForm.vue';
+import ModalBus from '@/Bus';
+import { createNamespacedHelpers } from 'vuex';
+const { mapState, mapActions } = createNamespacedHelpers('project')
 export default {
   name: "Projects",
   components: {
@@ -37,12 +38,13 @@ export default {
     ]),
     toggleForm() {
       ModalBus.$emit('open', {
-        component: NewProjectForm
+        component: NewProjectForm,
+        title: "Start a new Project"
       })
     }
   },
   created() {
-    this.$store.dispatch('getAllProjects');
+    this.$store.dispatch('project/getAllProjects');
   },
 }
 </script>

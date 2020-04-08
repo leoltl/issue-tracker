@@ -54,7 +54,7 @@ export default {
     display: grid;
     grid-template-areas: "nav nav"
                          "aside main";
-    grid-template-columns: 15% auto;
+    grid-template-columns: minmax(200px, 12.5%) auto;
     grid-template-rows: 65px calc(100vh - 65px);
     nav {
       grid-area: nav;

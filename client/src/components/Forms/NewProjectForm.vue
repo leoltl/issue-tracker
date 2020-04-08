@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import APIrequest from '@/request';
+  import APIrequest from '@/api/request';
   import { InputGeneric } from './FormFields';
   import CustomButton from '@/components/Button'
   export default {

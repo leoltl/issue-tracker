@@ -21,6 +21,8 @@ export default {
         const buttonType = computed(() => props.type || DEFAULT.type)
         const cssClass = computed(() => {
             switch(buttonType.value){
+                case 'compose':
+                    return 'compose'
                 case 'search':
                 case 'submit':
                 case 'connectConsultant':
@@ -68,7 +70,29 @@ button {
     box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
     border-radius: 5px;
     background-color: $btn-primary-color;
-    color: $btn-primary-text
+    color: $btn-primary-text;
+    &.compose {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $btn-height;
+        color: black;
+        background: white;
+        width: 150px;
+        height: 2.8rem;
+        font-size: 1.2rem;
+        -webkit-box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302),0 1px 3px 1px rgba(60,64,67,0.149);
+        -moz-box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302),0 1px 3px 1px rgba(60,64,67,0.149);
+        box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302),0 1px 3px 1px rgba(60,64,67,0.149);
+        margin: 5%;
+        &:before{
+            content: "+";
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: $btn-primary-color;
+        }
+    }
 }
 
 @keyframes spinner {
