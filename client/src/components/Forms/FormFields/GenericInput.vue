@@ -1,6 +1,6 @@
 <template>
     <div class="form-field-group">
-        <label for="computedLabel">{{ computedLabel }}:<span class="asterisk" v-if="required">*</span></label>
+        <label :for="computedLabel">{{ computedLabel }}:<span class="asterisk" v-if="required">*</span></label>
         <input :type="computedType" v-model="input" :name="computedLabel"/>
         <ShowError v-if="input" :errors="errors" />
     </div>
@@ -25,9 +25,9 @@ export default {
         const computedLabel = computed(() => props.label || "Field" )
         const computedType = computed(() => props.type || "text")
         
-        watch(props.value, val => {
-            console.log(val)
+        watch(() => props.value, val => {
             input.value = val
+            emit('input', val)
         })
 
         return {
