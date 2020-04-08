@@ -1,13 +1,14 @@
 <template>
   <div class="tabs-menu">
     <slot />
-    <div class="plus">+</div>
+    <div class="plus" @click="create">+</div>
   </div>
 </template>
 
 <script>
 export default {
   name: "TabsMenu",
+  props: ["create"]
 }
 </script>
 

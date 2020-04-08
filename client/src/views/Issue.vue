@@ -29,7 +29,7 @@ const ISSUE_ROW = [
   { name: "description", displayAs: "Description" }, 
   { name: "createdAt", displayAs: "Created At", dataFilter: displayDate }, 
   { name: "authorId", displayAs: "Reported By", dataFunction: (data) => data.authorId.name },
-  { name: "assignedTo", displayAs: "Assigned To", dataFunction: (data) => data.assignedTo.name },
+  { name: "assignedTo", displayAs: "Assigned To", dataFunction: (data) => data.assignedTo.name || 'Not Assigned' },
   { name: "issueStatus", displayAs: "Status" , dataFilter: displayStatus},
   { name: "issuePriority", displayAs: "Priority", dataFilter: displayPriority },
 ]

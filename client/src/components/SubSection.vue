@@ -22,7 +22,6 @@ export default {
     -moz-box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
     box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
     border-radius: 5px;
-    overflow: hidden;
     background: white;
   }
   .sub-section-header {

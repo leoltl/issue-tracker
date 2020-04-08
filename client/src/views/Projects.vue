@@ -1,6 +1,6 @@
 <template>
   <div class="projects">
-    <TabsMenu>
+    <TabsMenu :create="toggleForm">
       <Tab 
         v-for="project in projects" 
         :project="project" 
@@ -16,7 +16,9 @@
 <script>
 import TabsMenu from '@/components/TabsMenu';
 import Tab from '@/components/Tab';
+import ModalBus from '@/Bus';
 import { mapState, mapActions } from 'vuex';
+import NewProjectForm from '../components/Forms/NewProjectForm.vue';
 export default {
   name: "Projects",
   components: {
@@ -32,7 +34,12 @@ export default {
   methods: {
     ...mapActions([
       'setCurrentProject'
-    ])
+    ]),
+    toggleForm() {
+      ModalBus.$emit('open', {
+        component: NewProjectForm
+      })
+    }
   },
   created() {
     this.$store.dispatch('getAllProjects');
