@@ -17,7 +17,12 @@ class Project extends ProjectModel {
 
   public async create(project: project) {
     this.isValid(project);
-    return super.create(project);
+    const createdProject = await super.create(project);
+    if (createdProject) {
+      
+    }
+
+    return createdProject;
   }
   
   public async update(project: project, id: number) {
