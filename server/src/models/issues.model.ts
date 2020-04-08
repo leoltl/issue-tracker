@@ -44,6 +44,14 @@ class Issue extends Model {
       issuesUuid: {
         colName: "issues_uuid",
         validator: () => true
+      },
+      issueStatus: {
+        colName: "issue_status",
+        validator: () => true
+      },
+      issuePriority: {
+        colName: "issue_priority",
+        validator: () => true
       }
     }
     super({ table: "issues", columns })
@@ -55,7 +63,7 @@ class Issue extends Model {
       //TODO: check valid issue author
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
       const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
-      return result
+      return this._stripProtectedFields(result, ['projectId', 'authorId'])
     } catch (e) {
       if (e.name == 'Validator Rejected') {
         throw new HTTP400Error(e.message)
@@ -64,21 +72,6 @@ class Issue extends Model {
       }
     }
   }
-
-  // protected async find(obj) {
-  //   var conditions = Object.entries(obj);
-  //   const whereClause = conditions.map(([column, value]) => `${column} = '${value}'`).join(' AND ')
-  //   try {
-  //     const result = await this.pool.query(`
-  //     SELECT * FROM issues
-  //     JOIN users AS author_user ON issues.author_id = author_user.id
-  //     WHERE ${whereClause}
-  //     `)
-  //     return this._stripProtectedFields(result, ['password'])
-  //   } catch (e) {
-  //     throw e
-  //   }
-  // }
 
   protected async update(issue: issue, id) {
     try {

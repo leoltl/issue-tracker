@@ -31,9 +31,15 @@ class IssueController {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
-    const issue = { ...req.body, projectId: Number(req.params.id) };
+    const uService = new UserService()
+    const pService = new ProjectService()
+    const iService = new IssueService()
+    const issue = req.body.data;
+    const projects_uuid = req.params.projectId;
     try {
-      const result = await (new IssueService()).create(issue);
+      const { id: projectId } = await pService.findIdByUUID(projects_uuid);
+      const { id: authorId } = await uService.findIdByUUID(issue.authorId );
+      const result = await iService.create({ ...issue, projectId, authorId });
       res.send(result)
     } catch (e) {
       next(e)

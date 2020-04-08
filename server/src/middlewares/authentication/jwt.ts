@@ -8,8 +8,8 @@ export function extractUserFromHeader(req, res, next) {
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
     const validUser = jwt.verify(token, SECRET);
-    const { username, name, email, role } = validUser;
-    req.user = { username, name, email, role };
+    const { username, name, email, role, usersUuid } = validUser;
+    req.user = { username, name, email, role, usersUuid };
     next()
   } catch (e) {
     req.user = null;
