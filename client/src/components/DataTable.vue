@@ -8,7 +8,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="currentRow in nubmerOfRows" :key="currentRow">
+      <tr v-for="currentRow in nubmerOfRows" :key="currentRow" @click="DataTableClick(currentRow - 1)">
         <td v-for="(column, index) of columns" :key="index">
             <span v-if="column.dataFilter">
               {{ column.dataFilter(data[currentRow-1][column.name]) }}
@@ -52,6 +52,11 @@ export default {
       var actionColumns = this.withAction && this.withAction.length ? [...dataColumns, ...this.withAction] : dataColumns
       return actionColumns;
     },
+  },
+  methods: {
+    DataTableClick(rowNumber){
+      this.$emit('rowClick', rowNumber)
+    }
   }
 }
 </script>
@@ -71,6 +76,9 @@ export default {
       td {
         padding: 1rem;
         vertical-align: center;
+        @media screen and (max-width: 1600px){
+          padding: 0.5rem;
+        }
       }
     }
   }

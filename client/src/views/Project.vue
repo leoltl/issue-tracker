@@ -1,8 +1,5 @@
 <template>
   <section class="project-main" v-if="currentProjectID">
-    <SubSection :title="'Project details'" class="sub-section-details">
-      Name: {{ currentProject.name }}
-    </SubSection>
     <SubSection :title="'Tickets'" class="sub-section-issues">
       <DataTable 
         :data="issues" 
@@ -10,12 +7,17 @@
         :withAction="issueActions"
       />
     </SubSection>
-    <SubSection :title="'Project members'" class="sub-section-users">
-      <DataTable 
-        :data="projectMembers"
-        :definedColumns="memberColumns"
-      />
-    </SubSection>
+    <div class="right-col">
+      <SubSection :title="'Project details'" class="sub-section-details">
+        Name: {{ currentProject.name }}
+      </SubSection>
+      <SubSection :title="'Project members'" class="sub-section-users">
+        <DataTable 
+          :data="projectMembers"
+          :definedColumns="memberColumns"
+        />
+      </SubSection>
+    </div>
   </section>
 </template>
 
@@ -81,22 +83,33 @@ export default {
 
 <style lang="scss" scoped>
   .project-main {
-    height: 100%;
+    height: calc(100vh - 5vh - 105px);;
     background-color: #eee;
-    margin: 2vh 2.5vw;
+    padding: 2vh 2.5vw;
     display: grid;
-    grid-template: "tickets details"
-                    "tickets users";
-    grid-template-columns: 70% auto;
+    grid-template: "tickets info";
+    grid-template-columns: 65% auto;
     grid-gap: 2.5vw;
-    .sub-section-details {
-      grid-area: details
+    .right-col {
+      grid-area: info;
+      > * {
+        margin-bottom: 2.5vw;
+      }
     }
     .sub-section-tickets {
-      grid-area: tickets
+      grid-area: tickets;
     }
-    .sub-section-users {
-      grid-area: users
+    
+    @media screen and (max-width: 1600px){
+      grid-gap: 1vw;
+      padding: 2vh 1vw;
+    }
+    @media screen and (max-width: 1350px){
+      grid-template: "tickets"
+                      "info";
+      grid-template-rows: 65% auto;
+      padding: 2vh 3vw;
+      height: 150%;
     }
   }
 </style>

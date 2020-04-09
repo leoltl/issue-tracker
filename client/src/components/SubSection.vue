@@ -23,6 +23,18 @@ export default {
     box-shadow: 2px 2px 5px 0px rgba(143,143,143,1);
     border-radius: 5px;
     background: white;
+    max-height: calc(100vh - 5vh - 100px);
+    overflow: scroll;
+    &::-webkit-scrollbar {
+      width: 0px;  /* Remove scrollbar space */
+      background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+    scrollbar-width: none;
+  }
+  
+  /* Optional: show position indicator in red */
+  ::-webkit-scrollbar-thumb {
+      background: #FF0000;
   }
   .sub-section-header {
     display: flex;

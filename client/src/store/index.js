@@ -5,6 +5,7 @@ import router from '@/router'
 import auth from './modules/auth';
 import issue from './modules/issue';
 import project from './modules/project';
+import user from './modules/user';
 
 Vue.use(Vuex);
 
@@ -13,6 +14,7 @@ const store = new Vuex.Store({
     auth,
     issue,
     project,
+    user,
   },
   actions: {
     pushRouter(_, path) {
