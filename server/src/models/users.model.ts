@@ -84,7 +84,7 @@ class UserModel extends Model {
       }
       delete user.id
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(user);
-      const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`;
+      const querySET = params.includes(',') ? `(${columns}) = (${params})` : `${columns} = ${params}`;
       // console.log(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
       const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values);
       return this._stripProtectedFields(result);

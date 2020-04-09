@@ -22,7 +22,7 @@ router.put('/issues/:issueId', IssueController.update);
 
 router.get('/u/all', UserController.getAll);
 router.get('/u/:username', UserController.get);
-router.put('/u/:username', authorize(roles.admin), UserController.update);
+router.put('/u/:usersUuid', authorize(roles.admin), UserController.update);
 
 router.post('/signup', UserController.create);
 router.post('/signin', UserController.signIn);

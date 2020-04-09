@@ -47,7 +47,7 @@ class UserService extends UserModel {
     const emailRegExp = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
     if (!emailRegExp.test(user.email)) { throw new HTTP400Error('Invalid email address')}
     if (user.password.length < 8) { throw new HTTP400Error('Password should be at least 8 character long')}
-    if (user.password != user.password2) { throw new HTTP400Error('Password don\'t match') }
+    if (user.password2 && user.password != user.password2) { throw new HTTP400Error('Password don\'t match') }
   }
 
   public async create(user: user) {

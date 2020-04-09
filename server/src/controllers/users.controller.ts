@@ -35,10 +35,10 @@ class UserController {
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
-    const { username } = req.params;
+    const { usersUuid } = req.params;
     const userService = new UserService();
-    const [ user ] = await userService.find({ username }, true );
-    const updateUser = { ...user, ...req.body };
+    const [ user ] = await userService.find({ 'users_uuid': usersUuid }, true );
+    const updateUser = { ...user, ...req.body.data };
     try {
       const result = await userService.update(updateUser, user.id);
       res.send(result)
