@@ -64,7 +64,7 @@ export default {
     }
   },
   created() {
-    if(this.$route.params.issueId) {
+    if(this.$route.params.issueId && !this.currentIssue) {
       this.$store.dispatch('issue/getIssueDetails', this.$route.params.issueId)
     }
   }

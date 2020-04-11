@@ -23,16 +23,11 @@ const routes = [
   },
   {
     path: '/projects',
+    meta: { restricted: true },
+    component: Projects,
     name: 'Projects',
-    component: Projects,
-    meta: { restricted: true },
-  },
-  {
-    path: '/projects/:projectId',
-    meta: { restricted: true },
-    component: Projects,
     children: [
-      { name: 'Project', path: "", component: Project } 
+      { name: 'Project', path: ":projectId", component: Project } 
     ],
   },
   {

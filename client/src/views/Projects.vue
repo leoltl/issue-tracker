@@ -47,7 +47,7 @@ export default {
     this.$store.dispatch('project/getAllProjects');
   },
   beforeDestroy() {
-    this.$store.dispatch('setCurrentProject', "");
+    this.$store.dispatch('project/setCurrentProject', "");
   }
 }
 </script>
