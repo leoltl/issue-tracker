@@ -7,6 +7,15 @@ const issue = {
     issues: [],
     currentIssue: null,
   },
+  getters: {
+    issueData(state) {
+      const data = {...state.currentIssue}
+      data.projectId = state.currentIssue.projectId.projectsUuid
+      data.authorId = state.currentIssue.authorId.usersUuid
+      data.assignedId = state.currentIssue.assignedId.usersUuid
+      return data;
+    }
+  },
   mutations: {
     setIssues(state, issues) {
       state.issues = issues
@@ -35,6 +44,16 @@ const issue = {
       try {
         const { data: [issue] } = await API.issue.createIssue(formData, projectId);
         this.dispatch('pushRouter', `/issues/${issue.issuesUuid}`, { root: true })
+      } catch (e) {
+        console.log(e)
+      } finally {
+        loaderCallback && loaderCallback()
+      }
+    },
+    async updateIssue( { commit }, { formData, issuesId, loaderCallback }) {
+      try {
+        const { data: issue } = await API.issue.updateIssue(formData, issuesId);
+        commit('setCurrentIssue', issue)
       } catch (e) {
         console.log(e)
       } finally {

@@ -36,7 +36,7 @@
 
 <script>
 import CustomButton from '@/components/Button'
-import NewIssueForm from '@/components/Forms/NewIssueForm'
+import NewIssueForm from '@/components/Forms/IssueFormCreate'
 import SideMenuItem from '@/components/SideMenuItem';
 import ModalBus from '@/Bus';
 export default {

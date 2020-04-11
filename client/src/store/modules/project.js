@@ -11,6 +11,14 @@ const project = {
     currentProject(state) {
       return state.projects.find(project => project.projectsUuid == state.currentProjectID) || ""
     },
+    projectOptions(state) {
+      return state.projects.map(project => {
+        return {
+          name: project.name,
+          value: project.projectsUuid
+        }
+      })
+    }
   },
   mutations: {
     setProjects(state, projects) {

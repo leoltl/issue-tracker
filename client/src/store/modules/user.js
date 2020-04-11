@@ -6,6 +6,15 @@ const user = {
     users: [],
     selectedUser: {}
   },
+  getters: {
+    userOptions(state) {
+      return state.users.map(user => ({
+          name: user.name,
+          value: user.usersUuid
+        })
+      );
+    }
+  },
   mutations: {
     setUsers(state, users) {
       state.users = users

@@ -21,6 +21,9 @@ export default {
     background-color: #444;
     color: white;
     cursor: pointer;
+    &:hover {
+      background-color: #888;
+    }
   }
   .selected {
       border-top: 3px solid #f48024;

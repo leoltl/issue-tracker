@@ -2,6 +2,7 @@
   <div class="ticket">
     <section class="ticket-main">
       <SubSection :title="'Ticket details'" class="sub-section-details">
+        <button @click="handleEdit">Edit</button>
         <DataList
           v-if="currentIssue"
           :data="issueData"
@@ -9,7 +10,6 @@
         />
       </SubSection>
       <SubSection :title="'Ticket comments'" class="sub-section-comment">
-        <!-- TODO -->
       </SubSection>
     </section>
   </div>
@@ -22,6 +22,8 @@ import { displayDate, displayStatus, displayPriority } from '@/filters';
 import { createNamespacedHelpers } from 'vuex';
 import SubSection from '@/components/SubSection';
 import DataList from '@/components/DataList';
+import UpdateIssueForm from '@/components/Forms/IssueFormUpdate';
+import ModalBus from '@/Bus';
 
 const { mapState } = createNamespacedHelpers('issue')
 const ISSUE_ROW = [
@@ -29,16 +31,18 @@ const ISSUE_ROW = [
   { name: "description", displayAs: "Description" }, 
   { name: "createdAt", displayAs: "Created At", dataFilter: displayDate }, 
   { name: "authorId", displayAs: "Reported By", dataFunction: (data) => data.authorId.name },
-  { name: "assignedTo", displayAs: "Assigned To", dataFunction: (data) => data.assignedTo.name || 'Not Assigned' },
-  { name: "issueStatus", displayAs: "Status" , dataFilter: displayStatus},
-  { name: "issuePriority", displayAs: "Priority", dataFilter: displayPriority },
+  { name: "assignedId", displayAs: "Assigned To", dataFunction: (data) => data.assignedId.name || 'Not Assigned' },
+  { name: "status", displayAs: "Status" , dataFilter: displayStatus},
+  { name: "priority", displayAs: "Priority", dataFilter: displayPriority },
 ]
 
 export default {
   name: "Issue",
   components: {
     SubSection,
-    DataList
+    DataList,
+    // eslint-disable-next-line vue/no-unused-components
+    UpdateIssueForm,
   },
   computed: {
     ...mapState([
@@ -49,6 +53,14 @@ export default {
     },
     issueRow() {
       return ISSUE_ROW;
+    }
+  },
+  methods: {
+    handleEdit() {
+       ModalBus.$emit('open', {
+        component: UpdateIssueForm,
+        title: "Edit Issue:"
+      })
     }
   },
   created() {
