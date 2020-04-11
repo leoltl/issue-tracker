@@ -82,8 +82,6 @@ class Issue extends Model {
       this.validate(issue, ["title", "description", "authorId", "projectId"])
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
       const querySET = params.includes(',') ? `(${columns}) = (${params})` : `${columns} = ${params}`
-      console.log(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`)
-      console.log('\n', values)
       const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
       return result
     } catch (e) {

@@ -63,8 +63,10 @@ class IssueController {
       const { id: assignedId } = await uService.findIdByUUID(assigned_uuid);
       const [ issue ] = await iService.find({ 'issues_uuid': issuesUuid }, true );
       const updatedIssue = {...issue, ...rest, projectId, authorId, assignedId}
-      console.log(updatedIssue);
-      const result = await iService.update(updatedIssue, issue.id);
+      const [result] = await iService.update(updatedIssue, issue.id);
+      result.projectId = await pService.findOne({'projects_uuid': projects_uuid });
+      result.authorId = await uService.findOne({'users_uuid': author_uuid });
+      result.assignedId = assigned_uuid ? await uService.findOne({'users_uuid': assigned_uuid }) : { id: null }
       res.send(result)
     } catch (e) {
       next(e)

@@ -39,7 +39,7 @@ abstract class Model {
 
   protected validate(obj: any, fields: Array<string>): boolean {
     fields.forEach(field => {
-      console.log(field, this.columns[field])
+      // console.log(field, this.columns[field])
       var isValid = this.columns[field].validator(obj[field])
       if (!isValid) {
         const e = new Error(`Validation failed at field: ${field} with value: ${obj[field]}`);
