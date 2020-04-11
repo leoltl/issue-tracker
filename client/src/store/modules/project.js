@@ -38,6 +38,7 @@ const project = {
     },
     setCurrentProject({ commit }, projectId) {
       commit('setCurrentProject', projectId);
+      if (projectId == "") return;
       this.dispatch('issue/getAllIssues', projectId, { root: true });
       this.dispatch('project/getProjectMember', projectId);
       this.dispatch('pushRouter', `/projects/${projectId}`, { root: true })
