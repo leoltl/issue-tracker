@@ -45,5 +45,13 @@ export default {
   created() {
     this.$store.dispatch('user/getAllUsers')
   },
+  mounted() {
+    if (!this.projectOptions.length) {
+      this.$store.dispatch('project/getAllProjects')
+      }
+    if (!this.usersOptions.length) {
+      this.$store.dispatch('user/getAllUsers')
+    } 
+  }
 }
 </script>

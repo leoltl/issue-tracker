@@ -46,6 +46,9 @@ export default {
   created() {
     this.$store.dispatch('project/getAllProjects');
   },
+  beforeDestroy() {
+    this.$store.dispatch('project/setCurrentProject', "");
+  }
 }
 </script>
 
