@@ -14,6 +14,7 @@ interface user {
   id?: number,
   password: string,
   email: string,
+  role: String,
   usersUuid: String
 }
 
@@ -37,7 +38,9 @@ class Project extends ProjectModel {
         const projectId: Number = createdProject.id
         const { id: userId }: user = await uService.findIdByUUID(user.usersUuid)
         
-        await pmService.create({ projectId, userId })
+        if (user.role != 'admin') {
+          await pmService.create({ projectId, userId })
+        }
 
         const admins = await uService.find({ role: 'admin'}, true)
         admins.forEach(async admin => await pmService.create({ projectId, userId: admin.id }))

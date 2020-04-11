@@ -12,7 +12,8 @@ interface user {
   id?: number,
   password: string,
   password2: string,
-  email: string
+  email: string,
+  role: string,
 }
 
 class UserService extends UserModel {

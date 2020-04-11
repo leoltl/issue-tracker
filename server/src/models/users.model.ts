@@ -10,6 +10,7 @@ interface user {
   username: string,
   id?: number,
   password: string,
+  role: string,
   email: string
 }
 

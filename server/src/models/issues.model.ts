@@ -32,6 +32,10 @@ class Issue extends Model {
         validator: (val) => val && typeof val == "number",
         protected: true,
       },
+      assignedId: {
+        colName: "assigned_id",
+        validator: (val) => val && typeof val == "number",
+      },
       projectId: {
         colName: "project_id",
         validator: (val) => val && typeof val == "number",
@@ -45,14 +49,14 @@ class Issue extends Model {
         colName: "issues_uuid",
         validator: () => true
       },
-      issueStatus: {
-        colName: "issue_status",
+      status: {
+        colName: "status",
         validator: () => true
       },
-      issuePriority: {
-        colName: "issue_priority",
+      priority: {
+        colName: "priority",
         validator: () => true
-      }
+      },
     }
     super({ table: "issues", columns })
   }
@@ -77,7 +81,9 @@ class Issue extends Model {
     try {
       this.validate(issue, ["title", "description", "authorId", "projectId"])
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
-      const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`
+      const querySET = params.includes(',') ? `(${columns}) = (${params})` : `${columns} = ${params}`
+      console.log(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`)
+      console.log('\n', values)
       const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
       return result
     } catch (e) {
@@ -92,7 +98,7 @@ class Issue extends Model {
   protected async findAllByProjectId(projectId: number) {
     const result = await this.pool.query(`
       SELECT * from ${this.table} 
-      JOIN users ON ${this.table}.author = users.id 
+      JOIN users ON ${this.table}.author_id = users.id 
       WHERE project_id = $1`, [projectId])
     if (!result) throw new HTTP400Error("Record not found")
     return this._stripProtectedFields(result, ['password'])

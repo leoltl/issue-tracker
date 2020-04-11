@@ -39,7 +39,7 @@ abstract class Model {
 
   protected validate(obj: any, fields: Array<string>): boolean {
     fields.forEach(field => {
-      // console.log(column, this.columns[column])
+      console.log(field, this.columns[field])
       var isValid = this.columns[field].validator(obj[field])
       if (!isValid) {
         const e = new Error(`Validation failed at field: ${field} with value: ${obj[field]}`);
@@ -52,7 +52,6 @@ abstract class Model {
 
   protected async findOne(obj: any, displayProtectedFields: boolean=false) {
     var conditions = Object.entries(obj);
-    // TODO: add more flexiblity
     const whereClause = conditions.map(([columnName, condition]) => {
       if (Array.isArray(condition)) {
         return condition.map(condition => `${columnName} = ${condition}`).join(' OR ')
@@ -69,7 +68,6 @@ abstract class Model {
 
   protected async find(obj: any, displayProtectedFields: boolean=false) {
     var conditions = Object.entries(obj);
-    // TODO: add more flexiblity
     const whereClause = conditions.map(([columnName, condition]) => {
       if (Array.isArray(condition)) {
         return condition.map(condition => `${columnName} = ${condition}`).join(' OR ')
@@ -83,11 +81,11 @@ abstract class Model {
   }
 
   protected parseColumnForCreateUpdate(obj): [string, any[], string] {
-    var keyValuePairs = Object.entries(obj);
+    var keyValuePairs = Object.entries(obj).filter(([column, _]) => !this.columns[column].isPrimaryKey)
     if (keyValuePairs.length == 0) throw new HTTP400Error("Missing value in object creation")
     var [columns, values, params] = keyValuePairs.reduce(
       ([cols, vals, parms]: [Array<string>, Array<string>, Array<string>], [column, value]: [string, string], i: number)  => {
-        if (this.columns[column].isPrimaryKey) return [cols, vals, parms] // skip prop if primary key
+        // if (this.columns[column].isPrimaryKey) return [cols, vals, parms] // skip prop if primary key
         return [[...cols, this.columns[column].colName], [...vals, value], [...parms, `$${i+1}`]]
     }, [[], [], []])  
     return [columns.join(), values, params.join()]

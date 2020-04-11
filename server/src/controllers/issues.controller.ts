@@ -22,7 +22,7 @@ class IssueController {
     try {
       const result = await iService.findOne({ 'issues_uuid': req.params.issueId }, true);
       result.authorId = await uService.findOne({ id: result.authorId });
-      result.assignedTo = result.assignedTo && await uService.findOne({ id: result.assignedTo }) || "";
+      result.assignedId = result.assignedId && await uService.findOne({ id: result.assignedId }) || "";
       result.projectId = await pService.findOne({ id: result.projectId });
     
       res.send(result);
@@ -53,17 +53,17 @@ class IssueController {
     const pService = new ProjectService()
     const uService = new UserService()
     const { projectId: projects_uuid, 
-            assignedTo: assignedTo_uuid, 
+            assignedId: assigned_uuid, 
             authorId: author_uuid, 
             ...rest } = req.body.data;
 
-    console.log(req.body.data)
     try {
       const { id: projectId } = await pService.findIdByUUID(projects_uuid);
       const { id: authorId } = await uService.findIdByUUID(author_uuid);
-      const { id: assignedTo } = await uService.findIdByUUID(assignedTo_uuid);
+      const { id: assignedId } = await uService.findIdByUUID(assigned_uuid);
       const [ issue ] = await iService.find({ 'issues_uuid': issuesUuid }, true );
-      const updatedIssue = {...issue, rest, projectId, authorId, assignedTo}
+      const updatedIssue = {...issue, ...rest, projectId, authorId, assignedId}
+      console.log(updatedIssue);
       const result = await iService.update(updatedIssue, issue.id);
       res.send(result)
     } catch (e) {
