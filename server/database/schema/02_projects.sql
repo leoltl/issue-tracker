@@ -6,5 +6,3 @@ CREATE TABLE projects (
   projects_uuid uuid DEFAULT gen_random_uuid()
 );
 
-INSERT INTO projects (name) VALUES ('test project');
-INSERT INTO projects (name) VALUES ('project Vue');

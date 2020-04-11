@@ -45,11 +45,10 @@ class Project extends ProjectModel {
         const admins = await uService.find({ role: 'admin'}, true)
         admins.forEach(async admin => await pmService.create({ projectId, userId: admin.id }))
       }
-      return createdProject;
+      return [createdProject];
     } catch (e) {
       throw e
     }
-   
   }
 
   public async update(project: project, id: number) {

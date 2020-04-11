@@ -57,6 +57,14 @@ class Issue extends Model {
         colName: "priority",
         validator: () => true
       },
+      updatedBy: {
+        colName: "updated_by",
+        validator: (val) => val && typeof val == "number",
+      },
+      updatedAt: {
+        colName: "updated_at",
+        validator: () => true,
+      },
     }
     super({ table: "issues", columns })
   }
@@ -67,7 +75,7 @@ class Issue extends Model {
       //TODO: check valid issue author
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
       const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
-      return this._stripProtectedFields(result, ['projectId', 'authorId'])
+      return result
     } catch (e) {
       if (e.name == 'Validator Rejected') {
         throw new HTTP400Error(e.message)

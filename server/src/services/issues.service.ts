@@ -8,8 +8,9 @@ interface issue {
   authorId: Number,
   projectId: Number,
   createdAt: String,
+  assignedId: Number,
+  priority: String,
 }
-
 class Issue extends IssueModel {
   constructor(project: issue=null) {
     super();
@@ -21,6 +22,9 @@ class Issue extends IssueModel {
 
   public async create(issue: issue) {
     this.isValid(issue);
+    if (issue.priority == "") {
+      delete issue.priority
+    }
     return super.create(issue);
   }
   
@@ -43,6 +47,10 @@ class Issue extends IssueModel {
 
   public async findById(issueId: number) {
     return super.findById(issueId);
+  }
+
+  public async findHistory(obj) {
+    return super.findHistory(obj)
   }
 
   public async findAllByProjectId(projectId: number) {

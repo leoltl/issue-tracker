@@ -58,7 +58,6 @@ abstract class Model {
       }
       return `${columnName} = '${condition}'`
     }).join(' AND ')
-    
     const result = await pool.query(`SELECT * FROM ${this.table} WHERE ${whereClause} LIMIT 1`)
     if (result.length == 0) throw new HTTP400Error("Record not found")
     if (displayProtectedFields) return result[0];
@@ -81,7 +80,10 @@ abstract class Model {
   }
 
   protected parseColumnForCreateUpdate(obj): [string, any[], string] {
-    var keyValuePairs = Object.entries(obj).filter(([column, _]) => !this.columns[column].isPrimaryKey)
+    var keyValuePairs = Object.entries(obj).filter(([column, _]) => {
+      // console.log(column)
+      return !this.columns[column].isPrimaryKey
+    })
     if (keyValuePairs.length == 0) throw new HTTP400Error("Missing value in object creation")
     var [columns, values, params] = keyValuePairs.reduce(
       ([cols, vals, parms]: [Array<string>, Array<string>, Array<string>], [column, value]: [string, string], i: number)  => {
@@ -122,6 +124,19 @@ abstract class Model {
     const result = await pool.query(`SELECT id FROM ${this.table} WHERE ${this.table}_uuid = $1 LIMIT 1`, [uuid])
     if (!result.length) throw new HTTP400Error("Record not found")
     return result[0];
+  }
+    
+  protected async findHistory(obj: any) {
+    var conditions = Object.entries(obj);
+    const whereClause = conditions.map(([columnName, condition]) => {
+      if (Array.isArray(condition)) {
+        return condition.map(condition => `${columnName} = ${condition}`).join(' OR ')
+      }
+      return `${columnName} = '${condition}'`
+    }).concat(`table_name = '${this.table}'`).join(' AND ')
+    const result = await pool.query(`SELECT old_val FROM history WHERE ${whereClause}`);
+    if (result.length == 0) throw new HTTP400Error("Record not found");
+    return result;
   }
 
   protected abstract create(obj: any, options?: any): Promise<Array<any> | any>

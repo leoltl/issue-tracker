@@ -4,29 +4,34 @@ import { HTTP400Error, HTTP401Error } from '../lib/httpErrors';
 import { generateJWToken } from '../middlewares/authentication/jwt';
 
 class UserController {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  protected userService;
+  constructor() {
+    this.userService = new UserService()
+  }
+  
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await new UserService().findAll();
+      const result = await this.userService.findAll();
       res.send(result);
     } catch (e) {
       next(e)
     }
   }
 
-  async get(req: Request, res: Response, next: NextFunction) {
+  get = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { username } = req.params
-      const result = await new UserService().find({ username })
+      const result = await this.userService.find({ username })
       res.send(result);
     } catch (e) {
       next(e)
     }
   }
 1
-  async create(req: Request, res: Response, next: NextFunction) {
+  create = async (req: Request, res: Response, next: NextFunction) => {
     const newUser = req.body.data
     try {
-      const [ user ] = await new UserService().create(newUser);
+      const [ user ] = await this.userService.create(newUser);
       const token = await generateJWToken(user)
       res.status(200).send(token)
     } catch (e) {
@@ -34,25 +39,23 @@ class UserController {
     } 
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  update = async (req: Request, res: Response, next: NextFunction) => {
     const { usersUuid } = req.params;
-    const userService = new UserService();
     try {
-      const [ user ] = await userService.find({ 'users_uuid': usersUuid }, true );
+      const [ user ] = await this.userService.find({ 'users_uuid': usersUuid }, true );
       const updateUser = { ...user, ...req.body.data };
-      const result = await userService.update(updateUser, user.id);
+      const result = await this.userService.update(updateUser, user.id);
       res.send(result)
     } catch (e) {
       next(e)
     }
   }
 
-  async signIn(req: Request, res: Response, next: NextFunction) {
+  signIn = async (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body.data;
-    const userService = new UserService();
     try {
       if (!username || !password) throw new HTTP400Error('Missing credentials. Please try again.')
-      const authenticatedUser = await userService.signIn(username, password);
+      const authenticatedUser = await this.userService.signIn(username, password);
       if (!authenticatedUser) throw new HTTP401Error('Authentication failed. Please try again.')
       const token = await generateJWToken(authenticatedUser)
       res.status(200).send(token)
@@ -61,7 +64,7 @@ class UserController {
     }
   }
 
-  async signOut(req: Request, res: Response, next: NextFunction) {
+  signOut = async (req: Request, res: Response, next: NextFunction) => {
     if (req.session.user) {
       req.session.destroy();
     }
@@ -69,7 +72,7 @@ class UserController {
     res.sendStatus(200)
   }
 
-  getMe(req: Request, res: Response, next: NextFunction) {
+  getMe = (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
       res.json({ user: req.user })
     } else {
@@ -77,7 +80,7 @@ class UserController {
     }
   }
 
-  refreshToken(req: Request, res: Response, next: NextFunction) {
+  refreshToken = (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
       const token = generateJWToken(req.user)
       res.status(200).send(token)

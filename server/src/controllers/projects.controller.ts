@@ -2,51 +2,55 @@ import ProjectService from "../services/projects.service";
 import { Request, Response, NextFunction, Router, Error } from "express";
 
 class ProjectController {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  protected projectService;
+  constructor() {
+    this.projectService = new ProjectService()
+  }
+
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await (new ProjectService()).find({ user: req.user });
+      const result = await this.projectService.find({ user: req.user });
       res.send(result);
     } catch (e) {
       next(e)
     }
   }
 
-  async get(req: Request, res: Response, next: NextFunction) {
+  get = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { projectId } = req.params
-      const result = await (new ProjectService()).findById(projectId);
+      const result = await this.projectService.findById(projectId);
       res.send(result);
     } catch (e) {
       next(e)
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  create = async (req: Request, res: Response, next: NextFunction) => {
     const project = req.body.data;
     try {
-      const result = await (new ProjectService(project)).create(project, req.user);
+      const [ result ] = await this.projectService.create(project, req.user);
       res.send(result)
     } catch (e) {
       next(e)
     } 
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  update = async (req: Request, res: Response, next: NextFunction) => {
     const { projectId } = req.params
-    const project = {name: req.body.name, projectId};
+    const project = { name: req.body.data.name, projectId };
     try {
-      const result = await (new ProjectService(project)).update(project, Number(projectId));
+      const [ result ] = await this.projectService.update(project, Number(projectId));
       res.send(result)
     } catch (e) {
       next(e)
     }
   }
 
-  async getProjectMembers(req: Request, res: Response, next: NextFunction) {
-    const service = new ProjectService()
+  getProjectMembers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id: projectId } = await service.findIdByUUID(req.params.projectId)
-      const result = await service.findProjectMembership(projectId);
+      const { id: projectId } = await this.projectService.findIdByUUID(req.params.projectId)
+      const result = await this.projectService.findProjectMembership(projectId);
       res.send(result);
     } catch (e) {
       next(e)

@@ -32,7 +32,7 @@ class Project extends Model {
       this.validate(project, ["name"])
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);
       const result = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
-      return result
+      return this._stripProtectedFields(result)
     } catch (e) {
       if (e.name == 'Validator Rejected') {
         throw new HTTP400Error(e.message)
@@ -46,7 +46,7 @@ class Project extends Model {
     try {
       this.validate(project, ["name", "id"])
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);
-      const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`
+      const querySET = params.includes(',') ? `(${columns}) = (${params})` : `${columns} = ${params}`
       const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
       return result
     } catch (e) {

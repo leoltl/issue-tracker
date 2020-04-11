@@ -4,73 +4,111 @@ import UserService from "../services/Users/users.service";
 import { Request, Response, NextFunction, Router, Error } from "express";
 
 class IssueController {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  protected issueService;
+  protected projectService;
+  protected userService;
+
+  constructor() {
+    this.issueService = new IssueService()
+    this.projectService = new ProjectService()
+    this.userService = new UserService()
+  }
+
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { projectId } = req.params
-      const { id: dbID } = await (new ProjectService()).findIdByUUID(projectId);
-      const result = await (new IssueService()).findAllByProjectId(dbID);
+      const { id: dbID } = await this.projectService.findIdByUUID(projectId);
+      const result = await this.issueService.findAllByProjectId(dbID);
       res.send(result);
     } catch (e) {
       next(e)
     }
   }
 
-  async get(req: Request, res: Response, next: NextFunction) {
-    const iService = new IssueService()
-    const uService = new UserService()
-    const pService = new ProjectService()
+  get = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await iService.findOne({ 'issues_uuid': req.params.issueId }, true);
-      result.authorId = await uService.findOne({ id: result.authorId });
-      result.assignedId = result.assignedId && await uService.findOne({ id: result.assignedId }) || "";
-      result.projectId = await pService.findOne({ id: result.projectId });
-    
+      let result = await this.issueService.findOne({ 'issues_uuid': req.params.issueId }, true);
+      result = await this.populateIssueDetails(result)
       res.send(result);
     } catch (e) {
       next(e)
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
-    const uService = new UserService()
-    const pService = new ProjectService()
-    const iService = new IssueService()
+  create = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
     const issue = req.body.data;
     const projects_uuid = req.params.projectId;
     try {
-      const { id: projectId } = await pService.findIdByUUID(projects_uuid);
-      const { id: authorId } = await uService.findIdByUUID(issue.authorId );
-      const result = await iService.create({ ...issue, projectId, authorId });
+      const [ 
+        { id: projectId },
+        { id: authorId  },
+        { id: updatedBy } ] = await Promise.all([
+          this.projectService.findIdByUUID(projects_uuid),
+          this.userService.findIdByUUID(issue.authorId),
+          this.userService.findIdByUUID(user.usersUuid)
+        ])
+      let [ result ] = await this.issueService.create({ ...issue, projectId, authorId, updatedBy });
+      result = await this.populateIssueDetails(result)
       res.send(result)
     } catch (e) {
       next(e)
     } 
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
     const issuesUuid = req.params.issueId
-    const iService = new IssueService()
-    const pService = new ProjectService()
-    const uService = new UserService()
-    const { projectId: projects_uuid, 
+    const { projectId:  projects_uuid, 
             assignedId: assigned_uuid, 
-            authorId: author_uuid, 
+            authorId:   author_uuid, 
             ...rest } = req.body.data;
-
     try {
-      const { id: projectId } = await pService.findIdByUUID(projects_uuid);
-      const { id: authorId } = await uService.findIdByUUID(author_uuid);
-      const { id: assignedId } = await uService.findIdByUUID(assigned_uuid);
-      const [ issue ] = await iService.find({ 'issues_uuid': issuesUuid }, true );
-      const updatedIssue = {...issue, ...rest, projectId, authorId, assignedId}
-      const [result] = await iService.update(updatedIssue, issue.id);
-      result.projectId = await pService.findOne({'projects_uuid': projects_uuid });
-      result.authorId = await uService.findOne({'users_uuid': author_uuid });
-      result.assignedId = assigned_uuid ? await uService.findOne({'users_uuid': assigned_uuid }) : { id: null }
+      const [ 
+        { id: projectId  },
+        { id: authorId   },
+        { id: assignedId }, 
+        { id: updatedBy  }, 
+        [ issue ] ] = await Promise.all([
+          this.projectService.findIdByUUID(projects_uuid),
+          this.userService.findIdByUUID(author_uuid),
+          this.userService.findIdByUUID(assigned_uuid),
+          this.userService.findIdByUUID(user.usersUuid),
+          this.issueService.find({'issues_uuid': issuesUuid}, true )
+        ]);
+      const updatedIssue = {...issue, ...rest, projectId, authorId, assignedId, updatedBy}
+      let [ result ] = await this.issueService.update(updatedIssue, issue.id);
+      result = await this.populateIssueDetails(result)
       res.send(result)
     } catch (e) {
       next(e)
     }
+  }
+  
+
+  getHistory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const issueUuid = req.params.issueId
+      let results = await this.issueService.findHistory({ 'record_uuid': issueUuid });
+      results = await Promise.all(results.map(({ oldVal }) => this.populateIssueDetails(oldVal)));
+      res.send(results);
+    } catch (e) {
+      next(e)
+    }    
+  }
+
+  populateIssueDetails = async (issue) => {
+    const _issue = {...issue}
+    _issue.projectId = await this.projectService.findOne({ id: issue.project_id || issue.projectId });
+    _issue.authorId = await this.userService.findOne({ id: issue.author_id || issue.authorId });
+    _issue.assignedId = _issue.assigned_id || issue.assignedId ? await this.userService.findOne({ id: issue.assigned_id || issue.assignedId }) : null
+    _issue.updatedBy = _issue.updated_by || issue.updatedBy ? await this.userService.findOne({ id: issue.updated_by || issue.updatedBy }) : null
+    delete _issue.id
+    delete _issue.project_id
+    delete _issue.author_id
+    delete _issue.assigned_id
+    delete _issue.updated_by
+    return _issue
   }
 }
 
