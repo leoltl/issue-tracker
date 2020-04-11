@@ -45,7 +45,6 @@ class Project extends Model {
   async update(project: project, id) {
     try {
       this.validate(project, ["name", "id"])
-      await this.findById(id)
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(project);
       const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`
       const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)

@@ -48,10 +48,23 @@ class IssueController {
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
-    const id = Number(req.params.id)
-    const issue = { ...req.body, id };
+    const issuesUuid = req.params.issueId
+    const iService = new IssueService()
+    const pService = new ProjectService()
+    const uService = new UserService()
+    const { projectId: projects_uuid, 
+            assignedTo: assignedTo_uuid, 
+            authorId: author_uuid, 
+            ...rest } = req.body.data;
+
+    console.log(req.body.data)
     try {
-      const result = await (new IssueService()).update(issue, id);
+      const { id: projectId } = await pService.findIdByUUID(projects_uuid);
+      const { id: authorId } = await uService.findIdByUUID(author_uuid);
+      const { id: assignedTo } = await uService.findIdByUUID(assignedTo_uuid);
+      const [ issue ] = await iService.find({ 'issues_uuid': issuesUuid }, true );
+      const updatedIssue = {...issue, rest, projectId, authorId, assignedTo}
+      const result = await iService.update(updatedIssue, issue.id);
       res.send(result)
     } catch (e) {
       next(e)

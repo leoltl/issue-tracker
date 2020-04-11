@@ -76,8 +76,9 @@ class Issue extends Model {
   protected async update(issue: issue, id) {
     try {
       this.validate(issue, ["title", "description", "authorId", "projectId"])
-      await this.findById(id)
-      const result = await this.pool.query(`UPDATE ${this.table} SET name = $1 WHERE id = $2`, [issue, issue.id])
+      var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
+      const querySET = params.includes(',') ? `(${columns} = ${params})` : `${columns} = ${params}`
+      const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
       return result
     } catch (e) {
       if (e.name == 'Validator Rejected') {
@@ -91,7 +92,7 @@ class Issue extends Model {
   protected async findAllByProjectId(projectId: number) {
     const result = await this.pool.query(`
       SELECT * from ${this.table} 
-      JOIN users ON ${this.table}.author_id = users.id 
+      JOIN users ON ${this.table}.author = users.id 
       WHERE project_id = $1`, [projectId])
     if (!result) throw new HTTP400Error("Record not found")
     return this._stripProtectedFields(result, ['password'])
