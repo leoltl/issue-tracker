@@ -18,6 +18,10 @@ const project = {
           value: project.projectsUuid
         }
       })
+    },
+    usersNotInCurrentProject(state, _,__, getters) {
+      var projectMembers = state.projectMembers.map(user => user.usersUuid);
+      return getters['user/allUsers'].filter(user => !projectMembers.includes(user.usersUuid));
     }
   },
   mutations: {
@@ -63,7 +67,7 @@ const project = {
         commit('setProjectMembers', state.projectMembers.filter(user => user.usersUuid != userId ))
       } catch (e) {
         console.log(e)
-      }
+      }['user/allUsers']
     }
   },
 }

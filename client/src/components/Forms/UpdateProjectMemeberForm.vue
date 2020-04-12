@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent>
     <UserTable 
-      :users="users"
+      :users="usersNotInCurrentProject"
       :handleClick="handleSelectUser"
       :selectedRows="selected"
       />
@@ -22,10 +22,9 @@
   import ModalBus from '@/Bus'
   
   import { createNamespacedHelpers } from 'vuex';
-  const { mapState: mapUserState } = createNamespacedHelpers('user')
+  const { mapGetters: mapUserGetters } = createNamespacedHelpers('project')
   export default {
     name: "UpdateProjectMemberForm",
-    props: ['projectId'],
     components: {
       CustomButton,
       UserTable
@@ -60,16 +59,13 @@
       }
     },
     computed: {
-      ...mapUserState([
-        'users',
+      ...mapUserGetters([
+        'usersNotInCurrentProject',
       ]),
     },
     created() {
       this.$store.dispatch('user/getAllUsers');
     },
-    destroyed() {
-
-    }
   }
 </script>
 
