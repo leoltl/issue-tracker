@@ -2,12 +2,14 @@
   <div class="ticket">
     <section class="ticket-main">
       <SubSection :title="'Issue ticket details'" class="sub-section-details">
-        <button @click="handleEdit">Edit</button>
         <DataList
           v-if="currentIssue"
           :data="issueData"
           :rows="issueRow"
         />
+        <div class="action">
+          <CustomButton @click="handleEdit">Edit</CustomButton>
+        </div>
       </SubSection>
       <SubSection :title="'Issue ticket comments'" class="sub-section-comment">
       </SubSection>
@@ -29,6 +31,7 @@
 <script>
 import { displayDate, displayStatus, displayPriority } from '@/filters';
 import { createNamespacedHelpers } from 'vuex';
+import CustomButton from '@/components/Button';
 import SubSection from '@/components/SubSection';
 import DataList from '@/components/DataList';
 import DataTable from '@/components/DataTable';
@@ -58,6 +61,7 @@ export default {
     SubSection,
     DataList,
     DataTable,
+    CustomButton,
     // eslint-disable-next-line vue/no-unused-components
     UpdateIssueForm,
   },
@@ -134,6 +138,11 @@ export default {
   }
   .sub-section-history {
     grid-area: history;
+  }
+  .action {
+    width: 150px;
+    padding: 20px;
+    float: right;
   }
 }
 </style>
