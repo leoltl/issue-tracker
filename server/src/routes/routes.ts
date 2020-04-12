@@ -14,6 +14,8 @@ router.post('/projects', ProjectController.create);
 router.get('/projects/:projectId', ProjectController.get);
 router.put('/projects/:projectId', authorize([roles.admin, roles.productManager]), ProjectController.update);
 router.get('/projects/:projectId/members', ProjectController.getProjectMembers);
+router.post('/projects/:projectId/members', ProjectController.createProjectMembers);
+router.delete('/projects/:projectId/members', ProjectController.destroyProjectMembers);
 
 router.get('/projects/:projectId/issues', IssueController.getAll);
 router.post('/projects/:projectId/issues', IssueController.create);

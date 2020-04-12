@@ -19,31 +19,35 @@ interface user {
 }
 
 class Project extends ProjectModel {
-  constructor(project: project=null) {
+  protected projectMemberService
+  protected userService
+
+  constructor() {
     super();
+    this.projectMemberService = new ProjMemberService();
+    this.userService = new UsersService();
   }
 
   private isValid(project: project) {
     if (project.name.length >= 100) throw new HTTP400Error("Project name limited to 100 characters");
   }
 
-  public async create(project: project, user:user) {
+  public create = async (project: project, user:user) => {
     this.isValid(project);
     try {
+      // add project membership upon new project creation
       const [ createdProject ] = await super.create(project);
       if (createdProject) {
-        const pmService = new ProjMemberService()
-        const uService = new UsersService()
   
         const projectId: Number = createdProject.id
-        const { id: userId }: user = await uService.findIdByUUID(user.usersUuid)
+        const { id: userId }: user = await this.userService.findIdByUUID(user.usersUuid)
         
         if (user.role != 'admin') {
-          await pmService.create({ projectId, userId })
+          await this.projectMemberService.create({ projectId, userId })
         }
 
-        const admins = await uService.find({ role: 'admin'}, true)
-        admins.forEach(async admin => await pmService.create({ projectId, userId: admin.id }))
+        const admins = await this.userService.find({ role: 'admin'}, true)
+        admins.forEach(async admin => await this.projectMemberService.create({ projectId, userId: admin.id }))
       }
       return [createdProject];
     } catch (e) {
@@ -51,15 +55,15 @@ class Project extends ProjectModel {
     }
   }
 
-  public async update(project: project, id: number) {
+  public update = async (project: project, id: number) => {
     this.isValid(project);
     return super.update(project, id);
   }
 
-  public async find(obj, displayProtectedFields: boolean=false) {
+  public find = async (obj, displayProtectedFields: boolean=false) => {
     if (obj.user) {
-      const { id: userId } = await new UsersService().findIdByUUID(obj.user.usersUuid);
-      const projects = await new ProjMemberService().findByUserId(userId);
+      const { id: userId } = await this.userService.findIdByUUID(obj.user.usersUuid);
+      const projects = await this.projectMemberService.findByUserId(userId);
       if (!projects.length) return []
       const projectIds = projects.map(project => project.projectId);
       return super.find({ id: projectIds });
@@ -68,25 +72,22 @@ class Project extends ProjectModel {
     }
   }
 
-  public async findOne(obj, displayProtectedFields: boolean=false) {
+  public findOne = async (obj, displayProtectedFields: boolean=false) => {
     return super.findOne(obj, displayProtectedFields);
   }
 
-  public async findAll() {
+  public findAll = async () => {
     return super.findAll();
   }
 
-  public async findById(projectId: number) {
+  public findById = async (projectId: number) => {
     return super.findById(projectId);
   }
 
-  public async findIdByUUID(uuid) {
+  public findIdByUUID = async (uuid) => {
     return super.findIdByUUID(uuid);
   }
-
-  public async findProjectMembership(projectId: number) {
-    return super.findProjectMembership(projectId);
-  }
+  
 }
 
 export default Project;

@@ -30,7 +30,11 @@ class ProjMember extends ProjMemberModel {
   
   public async update(projMember: projMember) {
     // this.isValid(projMember);
-    return super.update(projMember);
+    throw Error ('Method does not exist')
+  }
+
+  public async destroy(projMember: projMember) {
+    return super.destroy(projMember);
   }
 
   public async find(projMember: projMember) {

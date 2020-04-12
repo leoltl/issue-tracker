@@ -57,24 +57,6 @@ class Project extends Model {
       }
     }
   }
-
-  async findProjectMembership(projectId: number) {
-    try {
-      const result = await this.pool.query(`
-        SELECT * 
-        FROM project_members 
-        JOIN users ON project_members.user_id = users.id 
-        WHERE project_members.project_id = $1
-        `, [projectId])
-        return this._stripProtectedFields(result, ["password", "userId", "projectId"])
-    } catch (e) {
-      if (e.name == 'Validator Rejected') {
-        throw new HTTP400Error(e.message)
-      } else {
-        throw e
-      }
-    }
-  }
 }
 
 export default Project;

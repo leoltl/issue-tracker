@@ -37,16 +37,34 @@ class ProjMember extends Model {
     return res;
   }
 
-  async create(projMember: membership){
+  async create(projMember: membership) {
     var [ columns, values, params ] = this.parseColumnForCreateUpdate(projMember);
     const prevRecord = await this.find(projMember)
     if (prevRecord.length) throw Error ('Membership of project has already been created.')
     const res = await this.pool.query(`INSERT INTO ${this.table} (${columns}) VALUES (${params}) RETURNING *`, values)
     return res
   }
+  
+  async update(obj:any) {
+    void(0)
+  }
 
-  async update(projMember: membership) {
-
+  async findProjectMembership(projectId: number) {
+    try {
+      const result = await this.pool.query(`
+        SELECT * 
+        FROM project_members 
+        JOIN users ON project_members.user_id = users.id 
+        WHERE project_members.project_id = $1
+        `, [projectId])
+        return this._stripProtectedFields(result, ["password", "userId", "projectId"])
+    } catch (e) {
+      if (e.name == 'Validator Rejected') {
+        throw new HTTP400Error(e.message)
+      } else {
+        throw e
+      }
+    }
   }
 
 }
