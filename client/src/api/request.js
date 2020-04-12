@@ -6,7 +6,6 @@ const instance = axios.create({
   baseURL: BASE_URL
 })
 
-
 instance.interceptors.request.use(config => {
   const storedToken = window.localStorage.getItem('jwt-token')
   if (storedToken) {

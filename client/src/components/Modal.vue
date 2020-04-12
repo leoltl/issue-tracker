@@ -47,9 +47,9 @@ export default {
   font-weight: bold;
   font-size: 1.3rem;
   margin-bottom: 1rem;
-  color: rgb(100, 100, 100);
+  color: rgb(40, 40, 40);
 }
 .modal-body {
-  color: rgb(180, 180, 180);
+  color: rgb(80, 80, 80);
 }
 </style>

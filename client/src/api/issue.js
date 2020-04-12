@@ -5,6 +5,9 @@ const issue = (axios) => ({
   async getIssue(issueId) {
     return await axios.get(`/issues/${issueId}`)
   },
+  async getIssueHistory(issueId) {
+    return await axios.get(`/issues/${issueId}/history`)
+  },
   async createIssue(formData, projectId) {
     return await axios.post(`/projects/${projectId}/issues`, { data: formData })
   },

@@ -77,6 +77,9 @@ export default {
     if(this.$route.params.projectId && this.currentProjectID == "") {
       this.$store.dispatch('project/setCurrentProject', this.$route.params.projectId)
     }
+  },
+  beforeDestroy() {
+    this.$store.dispatch('project/setCurrentProject', '');
   }
 }
 </script>

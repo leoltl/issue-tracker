@@ -72,7 +72,7 @@ class IssueController {
         [ issue ] ] = await Promise.all([
           this.projectService.findIdByUUID(projects_uuid),
           this.userService.findIdByUUID(author_uuid),
-          this.userService.findIdByUUID(assigned_uuid),
+          assigned_uuid ? this.userService.findIdByUUID(assigned_uuid) : {id: null},
           this.userService.findIdByUUID(user.usersUuid),
           this.issueService.find({'issues_uuid': issuesUuid}, true )
         ]);
@@ -90,7 +90,7 @@ class IssueController {
     try {
       const issueUuid = req.params.issueId
       let results = await this.issueService.findHistory({ 'record_uuid': issueUuid });
-      results = await Promise.all(results.map(({ oldVal }) => this.populateIssueDetails(oldVal)));
+      results = await Promise.all(results.map(({ newVal }) => this.populateIssueDetails(newVal)));
       res.send(results);
     } catch (e) {
       next(e)

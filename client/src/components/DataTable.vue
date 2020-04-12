@@ -10,8 +10,14 @@
     <tbody>
       <tr v-for="currentRow in nubmerOfRows" :key="currentRow" @click="DataTableClick(currentRow - 1)">
         <td v-for="(column, index) of columns" :key="index">
-            <span v-if="column.dataFilter">
+            <span v-if="column.dataFilter && column.dataFunction">
+              {{ column.dataFilter(column.dataFunction(data[currentRow-1])) }}
+            </span>
+            <span v-else-if="column.dataFilter">
               {{ column.dataFilter(data[currentRow-1][column.name]) }}
+            </span>
+            <span v-else-if="column.dataFunction">
+              {{ column.dataFunction(data[currentRow-1]) }}
             </span>
             <span v-else-if="column.action">
               <CustomButton @click="column.action(data[currentRow-1])">

@@ -134,7 +134,7 @@ abstract class Model {
       }
       return `${columnName} = '${condition}'`
     }).concat(`table_name = '${this.table}'`).join(' AND ')
-    const result = await pool.query(`SELECT old_val FROM history WHERE ${whereClause}`);
+    const result = await pool.query(`SELECT new_val FROM history WHERE ${whereClause}`);
     if (result.length == 0) throw new HTTP400Error("Record not found");
     return result;
   }

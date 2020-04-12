@@ -6,13 +6,14 @@ const issue = {
   state: {
     issues: [],
     currentIssue: null,
+    currentIssueHistory: [],
   },
   getters: {
     issueData(state) {
       const data = {...state.currentIssue}
-      data.projectId = state.currentIssue.projectId.projectsUuid
+      data.projectId = state.currentIssue.projectId.projectsUuid || ""
       data.authorId = state.currentIssue.authorId.usersUuid
-      data.assignedId = state.currentIssue.assignedId.usersUuid
+      data.assignedId = state.currentIssue.assignedId?.usersUuid || ""
       return data;
     }
   },
@@ -23,6 +24,9 @@ const issue = {
     setCurrentIssue(state, issue) {
       state.currentIssue = issue
     },
+    setCurrentIssueHistory(state, issueHistory) {
+      state.currentIssueHistory = issueHistory
+    },
   },
   actions: {
     async getAllIssues({ commit }, projectId) {
@@ -31,6 +35,10 @@ const issue = {
     },
     async getIssueDetails({ commit }, ticketId) {
       try {
+        if (ticketId == "") { 
+          commit ('setCurrentIssue', null) 
+          return
+        }
         const { data: issue } = await API.issue.getIssue(ticketId);
         commit('setCurrentIssue', issue);
         this.dispatch('pushRouter', `/issues/${ticketId}`, { root: true })
@@ -38,6 +46,19 @@ const issue = {
         Message({
           message: "TOIMPROVE: NETWORK REQUEST FAILED"
         })
+      }
+    },
+    async getIssueHistory({ commit }, ticketId) {
+      console.log('called', ticketId)
+      try {
+        if (ticketId == "") { 
+          commit('setCurrentIssueHistory', []) 
+          return
+        }
+        const { data } = await API.issue.getIssueHistory(ticketId);
+        commit('setCurrentIssueHistory', data);
+      } catch(err) {
+        commit('setCurrentIssueHistory', []);
       }
     },
     async createIssue( _, { formData, projectId, loaderCallback }) {
@@ -54,6 +75,7 @@ const issue = {
       try {
         const { data: issue } = await API.issue.updateIssue(formData, issuesId);
         commit('setCurrentIssue', issue)
+        this.dispatch('issue/getIssueHistory', issue.issuesUuid)
       } catch (e) {
         console.log(e)
       } finally {

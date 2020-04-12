@@ -3,6 +3,12 @@ export function displayDate(value) {
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit', hour12: false})}`
 }
 
+export function displayDatedebug(value) {
+  var date = new Date(value)
+  console.log(value, date)
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit', hour12: false})}`
+}
+
 export function displayRole(role) {
   const DB_ROLE = {admin: 'Admin', pm: "Project Manager", dev: "Developer", tester: "Tester"}
   return DB_ROLE[role]

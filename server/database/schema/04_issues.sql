@@ -25,8 +25,9 @@ CREATE OR REPLACE FUNCTION change_trigger() RETURNS trigger AS $$
   BEGIN
     IF    TG_OP = 'INSERT'
     THEN
-      INSERT INTO history (table_name, operation, new_val)
-             VALUES (TG_RELNAME, TG_OP, row_to_json(NEW));
+      NEW.updated_at = NOW();
+      INSERT INTO history (table_name, operation, new_val, record_uuid)
+             VALUES (TG_RELNAME, TG_OP, row_to_json(NEW),  NEW.issues_uuid);
       RETURN NEW;
       
     ELSIF TG_OP = 'UPDATE'
@@ -47,7 +48,7 @@ CREATE OR REPLACE FUNCTION change_trigger() RETURNS trigger AS $$
   END;
 $$ LANGUAGE 'plpgsql' SECURITY DEFINER;
 
-CREATE TRIGGER t BEFORE UPDATE ON issues
+CREATE TRIGGER t BEFORE INSERT OR UPDATE OR DELETE ON issues
  
         FOR EACH ROW EXECUTE PROCEDURE change_trigger();
 
