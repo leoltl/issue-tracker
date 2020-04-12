@@ -8,25 +8,16 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="currentRow in nubmerOfRows" :key="currentRow" @click="DataTableClick(currentRow - 1)">
+      <tr v-for="currentRow in nubmerOfRows" :key="currentRow-1" @click="DataTableClick(currentRow - 1)">
         <td v-for="(column, index) of columns" :key="index">
-            <span v-if="column.dataFilter && column.dataFunction">
-              {{ column.dataFilter(column.dataFunction(data[currentRow-1])) }}
-            </span>
-            <span v-else-if="column.dataFilter">
-              {{ column.dataFilter(data[currentRow-1][column.name]) }}
-            </span>
-            <span v-else-if="column.dataFunction">
-              {{ column.dataFunction(data[currentRow-1]) }}
-            </span>
-            <span v-else-if="column.action">
-              <CustomButton @click="column.action(data[currentRow-1])">
-                {{ column.name }}
-              </CustomButton>
-            </span>
-            <span v-else>
-              {{ data[currentRow-1][column.name || column] }}
-            </span>
+          <span v-if="column.action">
+            <CustomButton @click="column.action(data[currentRow-1])">
+              {{ column.name }}
+            </CustomButton>
+          </span>
+          <span v-else>
+            {{ displayData(currentRow-1, column) }}
+          </span>
         </td>
       </tr>
     </tbody>
@@ -54,14 +45,28 @@ export default {
       return this.data.length
     },
     columns() {
-      var dataColumns = this.definedColumns || this.data.length && Object.keys(this.data[0]) || [];
-      var actionColumns = this.withAction && this.withAction.length ? [...dataColumns, ...this.withAction] : dataColumns
-      return actionColumns;
+      // use definedColumns if provied, otherwise get the column names from keys of the first data object
+      var dataColumns = this.definedColumns || (this.data?.length ? Object.keys(this.data[0]) : []);
+      var columnsWithAction = this.withAction?.length ? [...dataColumns, ...this.withAction] : dataColumns
+      return columnsWithAction;
     },
   },
   methods: {
     DataTableClick(rowNumber){
       this.$emit('rowClick', rowNumber)
+    },
+    displayData(row, column) {
+      const currentRowData = this.data[row];
+      const columnDataKey = column.name || column;
+      if ('dataFilter' in column && 'dataFunction' in column) {
+        return column.dataFilter(column.dataFunction(currentRowData))
+      } else if ('dataFilter' in column) {
+        return column.dataFilter(currentRowData[columnDataKey])
+      } else if ('dataFunction' in column) {
+        return column.dataFunction(currentRowData)
+      } else {
+        return currentRowData[columnDataKey]
+      }
     }
   }
 }

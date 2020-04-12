@@ -2,18 +2,7 @@
   <div class="data-list">
     <div v-for="row of rows" class="data-entry" :key="row.name">
       <span class="title">{{ row.displayAs || row.name }}:</span> 
-      <template v-if="row.dataFunction && row.dataFilter">
-        <span class="value">{{ row.dataFilter(row.dataFunction(data)) }}</span>
-      </template>
-      <template v-else-if="row.dataFunction">
-        <span class="value">{{ row.dataFunction(data) }}</span>
-      </template>
-      <template v-else-if="row.dataFilter">
-        <span class="value">{{ row.dataFilter(data[row.name]) }}</span>
-      </template>
-      <template v-else>
-        <span class="value">{{ data[row.name] }}</span>
-      </template>
+      <span class="value">{{ displayData(row) }}</span>
     </div>
   </div>
 </template>
@@ -24,6 +13,19 @@ export default {
   props: {
     data: Object,
     rows: Array,
+  },
+  methods: {
+    displayData(row) {
+      if ('dataFilter' in row && 'dataFunction' in row) {
+        return row.dataFilter(row.dataFunction(this.data))
+      } else if ('dataFilter' in row) {
+        return row.dataFilter(this.data[row.name])
+      } else if ('dataFunction' in row) {
+        return row.dataFunction(this.data)
+      } else {
+        return this.data[row.name]
+      }
+    }
   }
 }
 </script>
