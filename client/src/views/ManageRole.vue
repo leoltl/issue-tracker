@@ -1,43 +1,27 @@
 <template>
-<div class="manage-role">
-  <SubSection :title="'Managed Staff'" class="sub-section-users">
-    <DataTable 
-      :data="users"
-      :definedColumns="memberColumns"
-      @rowClick="handleClick"
-    />
-  </SubSection>
-</div>
+  <div class="manage-role">
+    <SubSection :title="'Managed Staff'" class="sub-section-users">
+      <UserTable :handleClick="handleClick.bind(this)" :users="users"/>
+    </SubSection>
+  </div>
 </template>
-
 <script>
-import SubSection from '@/components/SubSection'
-import DataTable from '@/components/DataTable'
-import { createNamespacedHelpers } from 'vuex'
-import { displayRole } from '@/filters';
-import ModalBus from '@/Bus';
+import SubSection from '@/components/SubSection';
 import UpdateRoleForm from '@/components/Forms/UpdateRoleForm'
+import ModalBus from '@/Bus';
+import UserTable from '@/views/UserTable';
+import { createNamespacedHelpers } from 'vuex'
 const { mapState } = createNamespacedHelpers('user')
-const MEMBERS_COLUMNS = [
-  { name: "name", displayAs: "Name" }, 
-  { name: "email", displayAs: "Email" }, 
-  { name: "role", displayAs: "Role", dataFilter: displayRole }
-];
 export default {
+  name: "ManageRole",
   components: {
-    SubSection,
-    DataTable
-  },
-  created(){
-    this.$store.dispatch('user/getAllUsers');
+    UserTable,
+    SubSection
   },
   computed: {
     ...mapState([
       "users",
     ]),
-    memberColumns() {
-      return MEMBERS_COLUMNS
-    }
   },
   methods: {
     handleClick(rowNumber) {
@@ -47,11 +31,14 @@ export default {
         title: `Update ${this.users[rowNumber].name}'s role`
       })
     }
-  }
+  },
+  created(){
+    this.$store.dispatch('user/getAllUsers');
+  },
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 .manage-role {
   padding: 1vh 2vw;
   height: 97%;

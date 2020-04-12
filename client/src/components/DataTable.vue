@@ -8,9 +8,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="currentRow in nubmerOfRows" :key="currentRow-1" @click="DataTableClick(currentRow - 1)">
+      <tr 
+        v-for="currentRow in nubmerOfRows" 
+        :key="currentRow-1" 
+        :class="{'selected': selectedRows.includes(currentRow-1)}"
+        @click="DataTableClick(currentRow - 1)">
         <td v-for="(column, index) of columns" :key="index">
-          <span v-if="column.action">
+          <span v-if="column.action" :class="`action-${column.name}`">
             <CustomButton @click="column.action(data[currentRow-1])">
               {{ column.name }}
             </CustomButton>
@@ -38,6 +42,10 @@ export default {
     },
     withAction: {
       type: Array
+    },
+    selectedRows: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -90,6 +98,9 @@ export default {
         @media screen and (max-width: 1600px){
           padding: 0.5rem;
         }
+      }
+      &.selected {
+        background: #77f5b279;
       }
     }
   }

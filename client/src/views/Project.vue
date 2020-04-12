@@ -12,41 +12,47 @@
         Name: {{ currentProject.name }}
       </SubSection>
       <SubSection :title="'Project members'" class="sub-section-users">
-        <DataTable 
-          :data="projectMembers"
-          :definedColumns="memberColumns"
+        <UserTable 
+          :users="projectMembers"
+          :withAction="memberActions"
         />
+        <div class="member-action">
+          <CustomButton @click="handleEdit">Edit Member</CustomButton>
+        </div>
       </SubSection>
     </div>
   </section>
 </template>
 
 <script>
+import UserTable from '@/views/UserTable';
 import DataTable from '@/components/DataTable';
 import SubSection from '@/components/SubSection';
+import CustomButton from '@/components/Button';
+import UpdateProjectMemberForm from '@/components/Forms/UpdateProjectMemeberForm';
+import ModalBus from '@/Bus';
 import { createNamespacedHelpers } from 'vuex';
-import { displayDate, displayRole } from '@/filters';
+import { displayDate } from '@/filters';
 
 const { mapState: mapIssueState } = createNamespacedHelpers('issue');
 const { mapState: mapProjectState, mapGetters: mapProjectGetters } = createNamespacedHelpers('project')
+
 const ISSUES_COLUMNS = [
   { name: "title", displayAs: "Title" }, 
   { name: "description", displayAs: "Description" }, 
   { name: "createdAt", displayAs: "Created At", dataFilter: displayDate }, 
   { name: "name", displayAs: "Reported By" }
 ];
-
-const MEMBERS_COLUMNS = [
-  { name: "name", displayAs: "Name"}, 
-  { name: "email", displayAs: "Email"}, 
-  { name: "role", displayAs: "Role", dataFilter: displayRole}
-];
 export default {
   name: "Projects",
   components: {
     SubSection,
+    UserTable,
     DataTable,
-   },
+    CustomButton,
+    // eslint-disable-next-line vue/no-unused-components
+    UpdateProjectMemberForm,
+  },
   computed: {
     ...mapProjectState([
       'currentProjectID',
@@ -69,8 +75,25 @@ export default {
         { name: "Details" , displayAs: " ", action: showIssueDetails.bind(this) },
       ];
     },
-    memberColumns() {
-      return MEMBERS_COLUMNS
+    memberActions() {
+      function removeMember(dataRow) {
+        this.$store.dispatch('project/deleteProjectMember', { userId: dataRow.usersUuid, projectId: this.currentProjectID })
+      }
+      return [
+        { name: "Delete" , displayAs: " ", action: removeMember.bind(this) },
+      ]
+    },
+  },
+  methods: {
+    handleEdit() {
+      ModalBus.$emit('open', {
+        component: UpdateProjectMemberForm,
+        title: `Add project members`,
+        props: {
+          projectId: this.currentProjectID
+        }
+      })
+      
     }
   },
   created() {
@@ -92,11 +115,16 @@ export default {
     display: grid;
     grid-template: "tickets info";
     grid-template-columns: 65% auto;
-    grid-gap: 2.5vw;
+    grid-gap: 2vw;
     .right-col {
       grid-area: info;
       > * {
         margin-bottom: 2.5vw;
+      }
+      .member-action {
+        width: 150px;
+        padding: 20px;
+        float: right;
       }
     }
     .sub-section-tickets {

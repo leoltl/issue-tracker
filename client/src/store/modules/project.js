@@ -47,6 +47,24 @@ const project = {
       const { data } = await API.project.getProjectMember(projectId);
       commit('setProjectMembers', data);
     },
+    async updateProjectMember(_, { formData, projectId, callback}) {
+      try {
+        await API.project.updateProjectMember(formData, projectId);
+        this.dispatch('project/getProjectMember', projectId)
+      } catch (e) {
+        console.log(e)
+      } finally {
+        callback && callback()
+      }
+    },
+    async deleteProjectMember({ commit, state }, { userId, projectId }) {
+      try {
+        await API.project.deleteProjectMember(userId, projectId);
+        commit('setProjectMembers', state.projectMembers.filter(user => user.usersUuid != userId ))
+      } catch (e) {
+        console.log(e)
+      }
+    }
   },
 }
 

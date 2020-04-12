@@ -14,7 +14,7 @@
           Projects
         </router-link>
       </SideMenuItem>
-       <SideMenuItem>
+      <SideMenuItem>
         <template v-slot:icon>
           <i class="el-icon-s-management"></i>
         </template>

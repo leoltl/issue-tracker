@@ -79,6 +79,7 @@
     .sign-up {
       flex-direction: row-reverse;
       .form-fields {
+        // reorder signup form fields
         .form-field-group:nth-of-type(1) { order: 1; }
         .form-field-group:nth-of-type(2) { order: 4; }
         .form-field-group:nth-of-type(3) { order: 5; }
