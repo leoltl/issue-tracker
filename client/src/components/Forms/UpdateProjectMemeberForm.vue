@@ -25,6 +25,7 @@
   const { mapGetters: mapUserGetters } = createNamespacedHelpers('project')
   export default {
     name: "UpdateProjectMemberForm",
+    props: ["projectId"],
     components: {
       CustomButton,
       UserTable
@@ -38,7 +39,7 @@
       }
     },
     methods: {
-      async handleSubmit(e, loaderCallback) {
+      async handleSubmit(e, loaderCallback) {        
         let formData = this.form
         var callback = () => {
           loaderCallback()
@@ -50,10 +51,10 @@
       handleSelectUser(rowNumber) {
         if (!this.selected.includes(rowNumber)) {
           this.selected.push(rowNumber);
-          this.form.members.push(this.users[rowNumber].usersUuid)
+          this.form.members.push(this.usersNotInCurrentProject[rowNumber].usersUuid)
         } else {
           this.selected = this.selected.filter(row => row != rowNumber)
-          var userToRemove = this.users[rowNumber].usersUuid
+          var userToRemove = this.usersNotInCurrentProject[rowNumber].usersUuid
           this.form.members = this.form.members.filter(user => user != userToRemove)
         }
       }
