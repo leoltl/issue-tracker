@@ -48,10 +48,6 @@ class ProjMember extends ProjMemberModel {
   public async findAll() {
     throw Error('Method does not exist on this model.')
   }
-
-  public async findById(issueId: number) {
-    throw Error('Method does not exist on this model.')
-  }
 }
 
 export default ProjMember;

@@ -80,10 +80,6 @@ class Project extends ProjectModel {
     return super.findAll();
   }
 
-  public findById = async (projectId: number) => {
-    return super.findById(projectId);
-  }
-
   public findIdByUUID = async (uuid) => {
     return super.findIdByUUID(uuid);
   }

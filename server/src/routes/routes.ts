@@ -9,8 +9,8 @@ import roles from '../middlewares/authorization/roles';
 
 const router = express.Router();
 router.get('/projects', ProjectController.getAll);
-// router.post('/projects', authorize([roles.admin, roles.productManager]),ProjectController.create);
-router.post('/projects', ProjectController.create);
+router.post('/projects', authorize([roles.admin, roles.productManager]),ProjectController.create);
+// router.post('/projects', ProjectController.create);
 router.get('/projects/:projectId', ProjectController.get);
 router.put('/projects/:projectId', authorize([roles.admin, roles.productManager]), ProjectController.update);
 router.get('/projects/:projectId/members', ProjectController.getProjectMembers);
@@ -22,6 +22,8 @@ router.post('/projects/:projectId/issues', IssueController.create);
 router.get('/issues/:issueId', IssueController.get);
 router.put('/issues/:issueId', IssueController.update);
 router.get('/issues/:issueId/history', IssueController.getHistory);
+router.get('/issues/:issueId/comments', IssueController.getComments);
+router.post('/issues/:issueId/comments', IssueController.createComment);
 
 router.get('/u/all', UserController.getAll);
 router.get('/u/:username', UserController.get);

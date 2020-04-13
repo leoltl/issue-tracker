@@ -78,7 +78,7 @@ class UserModel extends Model {
   protected async update(user: user, id) {
     try {
       this.validate(user, Object.keys(user))
-      await this.findById(id);
+      await this.find({ id });
       if (user.password) {
         var hashedPassword = await bcrypt.hash(user.password, saltRounds)
         user.password = hashedPassword;
@@ -88,19 +88,6 @@ class UserModel extends Model {
       const querySET = params.includes(',') ? `(${columns}) = (${params})` : `${columns} = ${params}`;
       // console.log(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values)
       const result = await this.pool.query(`UPDATE ${this.table} SET ${querySET} WHERE id = ${id} RETURNING *`, values);
-      return this._stripProtectedFields(result);
-    } catch (e) {
-      if (e.name == 'Validator Rejected') {
-        throw new HTTP400Error(e.message)
-      } else {
-        throw e
-      }
-    }
-  }
-
-  protected async findByUsername(username: string) {
-    try {
-      const result = await this.pool.query(`SELECT * FROM ${this.table} WHERE username = $1`, [username]);
       return this._stripProtectedFields(result);
     } catch (e) {
       if (e.name == 'Validator Rejected') {

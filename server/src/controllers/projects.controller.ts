@@ -25,7 +25,7 @@ class ProjectController {
   get = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { projectId } = req.params
-      const result = await this.projectService.findById(projectId);
+      const result = await this.projectService.find({id: projectId});
       res.send(result);
     } catch (e) {
       next(e)
