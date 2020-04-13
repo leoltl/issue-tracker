@@ -25,7 +25,7 @@
   const { mapGetters: mapUserGetters } = createNamespacedHelpers('project')
   export default {
     name: "UpdateProjectMemberForm",
-    props: ['projectId', "projectMembers"],
+    props: ['projectId'],
     components: {
       CustomButton,
       UserTable

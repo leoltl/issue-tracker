@@ -15,7 +15,10 @@ const issue = (axios) => ({
     return await axios.put(`/issues/${issueId}`, { data: formData })
   },
   async getIssueComments(issueId) {
-    return await axios.get(`issues/${issueId}/comments`)
+    return await axios.get(`/issues/${issueId}/comments`)
+  },
+  async createComment(formData, issueId) {
+    return await axios.post(`/issues/${issueId}/comments`, { data: formData })
   }
 })
 

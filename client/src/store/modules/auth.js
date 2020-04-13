@@ -14,6 +14,9 @@ const auth = {
     },
     userId(state) {
       return state.user.usersUuid;
+    },
+    userName(state) {
+      return state.user.name;
     }
   },
   mutations: {

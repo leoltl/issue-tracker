@@ -30,6 +30,9 @@ const issue = {
     },
     setCurrentIssueComments(state, issueComments) {
       state.currentIssueComments = issueComments;
+    },
+    addComment(state, comment) {
+      state.currentIssueComments = [...state.currentIssueComments, comment]
     }
   },
   actions: {
@@ -91,6 +94,15 @@ const issue = {
         commit('setCurrentIssueComments', data);
       } catch (e) {
         commit('setCurrentIssueComments', []);
+      }
+    },
+    async createComment({ commit }, { issueId: ticketId, formData, callback}) {
+      try {
+        const { data } = await API.issue.createComment(formData, ticketId);
+        commit('addComment', data);
+        callback && callback();
+      } catch(e) {
+        console.log(e)
       }
     }
   }

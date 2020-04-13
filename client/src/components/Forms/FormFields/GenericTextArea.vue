@@ -1,7 +1,7 @@
 <template>
     <div class="form-field-group">
         <label :for="computedLabel">{{ computedLabel }}:<span class="asterisk" v-if="required">*</span></label>
-        <input :type="computedType" v-model="input" :name="computedLabel"/>
+        <textarea :type="computedType" rows="1" v-model="input" :name="computedLabel"/>
         <ShowError v-if="input" :errors="errors" />
     </div>
 </template>
@@ -40,21 +40,22 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
     .form-field-group {
-        input {
-            border: none;
-            border-bottom: 1px solid black;
-            padding-bottom: 5px;
-        }
-        label {
-            margin-bottom: 5px;
-            color: #666;
-            font-size: 0.8rem;
-            margin-bottom: 5px;
-        }
-        .asterisk {
-            color: red;
-        }
+        display: flex;
+        flex-direction: column;
+    }
+    textarea {
+        border: none;
+        border-bottom: 1px solid black;
+        padding-bottom: 5px;
+    } 
+    label {
+        margin-bottom: 5px;
+        color: #666;
+        font-size: 0.8rem;
+    }
+    .asterisk {
+        color: red;
     }
 </style>

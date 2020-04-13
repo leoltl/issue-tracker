@@ -1,8 +1,8 @@
 <template>
-  <div class="comment">
+  <div class="comment" :class="{'own': currentUser == comment.authorId.name }">
     <div class="comment-meta">
       <span class="comment-date"> {{ comment.createdAt | displayDate }} </span>
-      <span class="comment-name"> {{ comment.authorId.name }} </span>
+      <span class="comment-name"> {{ currentUser == comment.authorId.name ? 'Me' : comment.authorId.name }} </span>
     </div>
     <div class="comment-message">
       {{ comment.body }}
@@ -13,7 +13,7 @@
 <script>
 export default {
   name: "CommentRow",
-  props: ["comment"]
+  props: ["comment", "currentUser"]
 }
 </script>
 
@@ -39,12 +39,32 @@ export default {
       z-index: inherit;
     }
   }
-  .comment-meta {
-    font-size: 0.85rem;
-    display: flex;
-    justify-content: space-between;
-    .comment-date {
-      font-size: 0.7rem;
+
+  .comment {
+    .comment-meta {
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      .comment-date {
+        visibility: hidden;
+        font-size: 0.7rem;
+      }
+    }
+    &:hover {
+      .comment-date {
+        visibility: visible;
+      }
+    }
+  }
+  
+
+  .own {
+    .comment-meta {
+      flex-direction: row-reverse;
+      padding-left: 17px;
+    }
+    .comment-message::after {
+      left: 15px;
     }
   }
 </style>

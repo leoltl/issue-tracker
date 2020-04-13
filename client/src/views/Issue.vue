@@ -12,10 +12,16 @@
         </div>
       </SubSection>
       <SubSection :title="'Ticket comments'" class="sub-section-comment">
-        <CommentRow
-          v-for="comment of currentIssueComments"
-          :comment="comment"
-          :key="comment.commentsUuid"
+        <div class="comment-list">
+          <CommentRow
+            v-for="comment of currentIssueComments"
+            :comment="comment"
+            :key="comment.commentsUuid"
+            :currentUser="userName"
+          />
+        </div>
+        <NewCommentForm 
+          :issueId="currentIssue.issuesUuid"
         />
       </SubSection>
       <SubSection :title="'Issue history'" class="sub-section-history">
@@ -40,11 +46,13 @@ import DataList from '@/components/DataList';
 import DataTable from '@/components/DataTable';
 import CommentRow from '@/components/CommentRow';
 import UpdateIssueForm from '@/components/Forms/IssueFormUpdate';
+import NewCommentForm from '@/components/Forms/NewCommentForm';
 import ModalBus from '@/Bus';
 import { displayDate, displayStatus, displayPriority } from '@/filters';
 
 import { createNamespacedHelpers } from 'vuex';
 const { mapState } = createNamespacedHelpers('issue')
+const { mapGetters: mapAuthGetters } = createNamespacedHelpers('auth')
 
 const ISSUE_ROW = [
   { name: "title", displayAs: "Title" }, 
@@ -70,6 +78,7 @@ export default {
     DataTable,
     CustomButton,
     CommentRow,
+    NewCommentForm,
     // eslint-disable-next-line vue/no-unused-components
     UpdateIssueForm,
   },
@@ -78,6 +87,9 @@ export default {
       "currentIssue",
       "currentIssueHistory",
       "currentIssueComments"
+    ]),
+    ...mapAuthGetters([
+      "userName"
     ]),
     issueData() {
       return this.currentIssue;
@@ -145,6 +157,10 @@ export default {
   }
   .sub-section-comment {
     grid-area: comment;
+    .comment-list {
+      max-height: 300px;
+      overflow-y: scroll;
+    }
   }
   .sub-section-history {
     grid-area: history;

@@ -91,7 +91,6 @@ export default {
         title: `Add project members`,
         props: {
           projectId: this.currentProjectID,
-          projectMembers: this.projectMembers
         }
       })
       
