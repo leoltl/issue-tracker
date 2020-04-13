@@ -13,7 +13,10 @@ const user = {
           value: user.usersUuid
         })
       );
-    }
+    },
+    allUsers(state) {
+      return state.users;
+    },
   },
   mutations: {
     setUsers(state, users) {

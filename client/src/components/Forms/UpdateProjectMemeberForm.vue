@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent>
     <UserTable 
-      :users="memberNotInCurrentProject"
+      :users="usersNotInCurrentProject"
       :handleClick="handleSelectUser"
       :selectedRows="selected"
       />
@@ -22,7 +22,7 @@
   import ModalBus from '@/Bus'
   
   import { createNamespacedHelpers } from 'vuex';
-  const { mapState: mapUserState } = createNamespacedHelpers('user')
+  const { mapGetters: mapUserGetters } = createNamespacedHelpers('project')
   export default {
     name: "UpdateProjectMemberForm",
     props: ['projectId', "projectMembers"],
@@ -60,21 +60,13 @@
       }
     },
     computed: {
-      ...mapUserState([
-        'users',
+      ...mapUserGetters([
+        'usersNotInCurrentProject',
       ]),
-      memberNotInCurrentProject() {
-        
-        var curMember = this.projectMembers.map(user => user.usersUuid);
-        return this.users.filter(user => !curMember.includes(user.usersUuid));
-      }
     },
     created() {
       this.$store.dispatch('user/getAllUsers');
     },
-    destroyed() {
-
-    }
   }
 </script>
 
