@@ -14,14 +14,16 @@
           Projects
         </router-link>
       </SideMenuItem>
+
       <SideMenuItem>
         <template v-slot:icon>
-          <i class="el-icon-s-management"></i>
+          <i class="el-icon-s-custom"></i>
         </template>
         <router-link :to="{name:'ManageRole'}">
           Manage Role
         </router-link>
       </SideMenuItem>
+
       <SideMenuItem @click.native="handleLogout">
         <template v-slot:icon>
           <i class="el-icon-switch-button"></i>

@@ -7,6 +7,7 @@ const issue = {
     issues: [],
     currentIssue: null,
     currentIssueHistory: [],
+    currentIssueComments: [],
   },
   getters: {
     issueData(state) {
@@ -27,6 +28,9 @@ const issue = {
     setCurrentIssueHistory(state, issueHistory) {
       state.currentIssueHistory = issueHistory
     },
+    setCurrentIssueComments(state, issueComments) {
+      state.currentIssueComments = issueComments;
+    }
   },
   actions: {
     async getAllIssues({ commit }, projectId) {
@@ -49,7 +53,6 @@ const issue = {
       }
     },
     async getIssueHistory({ commit }, ticketId) {
-      console.log('called', ticketId)
       try {
         if (ticketId == "") { 
           commit('setCurrentIssueHistory', []) 
@@ -80,6 +83,14 @@ const issue = {
         console.log(e)
       } finally {
         loaderCallback && loaderCallback()
+      }
+    },
+    async getAllIssueComments({ commit }, ticketId) {
+      try {
+        const { data } = await API.issue.getIssueComments(ticketId); 
+        commit('setCurrentIssueComments', data);
+      } catch (e) {
+        commit('setCurrentIssueComments', []);
       }
     }
   }

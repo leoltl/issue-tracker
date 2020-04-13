@@ -13,6 +13,9 @@ const issue = (axios) => ({
   },
   async updateIssue(formData, issueId) {
     return await axios.put(`/issues/${issueId}`, { data: formData })
+  },
+  async getIssueComments(issueId) {
+    return await axios.get(`issues/${issueId}/comments`)
   }
 })
 

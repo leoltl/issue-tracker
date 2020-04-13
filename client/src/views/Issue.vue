@@ -11,9 +11,14 @@
           <CustomButton @click="handleEdit">Edit</CustomButton>
         </div>
       </SubSection>
-      <SubSection :title="'Issue ticket comments'" class="sub-section-comment">
+      <SubSection :title="'Ticket comments'" class="sub-section-comment">
+        <CommentRow
+          v-for="comment of currentIssueComments"
+          :comment="comment"
+          :key="comment.commentsUuid"
+        />
       </SubSection>
-      <SubSection :title="'Issue ticket history'" class="sub-section-history">
+      <SubSection :title="'Issue history'" class="sub-section-history">
         <DataTable 
           v-if="currentIssueHistory.length"
           :data="currentIssueHistory" 
@@ -29,16 +34,18 @@
 
 
 <script>
-import { displayDate, displayStatus, displayPriority } from '@/filters';
-import { createNamespacedHelpers } from 'vuex';
 import CustomButton from '@/components/Button';
 import SubSection from '@/components/SubSection';
 import DataList from '@/components/DataList';
 import DataTable from '@/components/DataTable';
+import CommentRow from '@/components/CommentRow';
 import UpdateIssueForm from '@/components/Forms/IssueFormUpdate';
 import ModalBus from '@/Bus';
+import { displayDate, displayStatus, displayPriority } from '@/filters';
 
+import { createNamespacedHelpers } from 'vuex';
 const { mapState } = createNamespacedHelpers('issue')
+
 const ISSUE_ROW = [
   { name: "title", displayAs: "Title" }, 
   { name: "description", displayAs: "Description" }, 
@@ -62,13 +69,15 @@ export default {
     DataList,
     DataTable,
     CustomButton,
+    CommentRow,
     // eslint-disable-next-line vue/no-unused-components
     UpdateIssueForm,
   },
   computed: {
     ...mapState([
       "currentIssue",
-      "currentIssueHistory"
+      "currentIssueHistory",
+      "currentIssueComments"
     ]),
     issueData() {
       return this.currentIssue;
@@ -89,7 +98,7 @@ export default {
             data: snapShot,
             rows: ISSUE_ROW
           }
-      })
+        })
       }
       return [
         { name: "Details" , displayAs: " ", action: showHistory.bind(this) },
@@ -108,6 +117,7 @@ export default {
     if(this.$route.params.issueId && !this.currentIssue) {
       this.$store.dispatch('issue/getIssueDetails', this.$route.params.issueId)
       this.$store.dispatch('issue/getIssueHistory', this.$route.params.issueId)
+      this.$store.dispatch('issue/getAllIssueComments', this.$route.params.issueId)
     }
   },
   beforeDestroy() {

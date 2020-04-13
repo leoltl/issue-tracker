@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent>
     <UserTable 
-      :users="users"
+      :users="memberNotInCurrentProject"
       :handleClick="handleSelectUser"
       :selectedRows="selected"
       />
@@ -25,7 +25,7 @@
   const { mapState: mapUserState } = createNamespacedHelpers('user')
   export default {
     name: "UpdateProjectMemberForm",
-    props: ['projectId'],
+    props: ['projectId', "projectMembers"],
     components: {
       CustomButton,
       UserTable
@@ -63,6 +63,11 @@
       ...mapUserState([
         'users',
       ]),
+      memberNotInCurrentProject() {
+        
+        var curMember = this.projectMembers.map(user => user.usersUuid);
+        return this.users.filter(user => !curMember.includes(user.usersUuid));
+      }
     },
     created() {
       this.$store.dispatch('user/getAllUsers');

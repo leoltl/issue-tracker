@@ -90,7 +90,8 @@ export default {
         component: UpdateProjectMemberForm,
         title: `Add project members`,
         props: {
-          projectId: this.currentProjectID
+          projectId: this.currentProjectID,
+          projectMembers: this.projectMembers
         }
       })
       
