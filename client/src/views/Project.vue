@@ -40,6 +40,7 @@ const { mapState: mapProjectState, mapGetters: mapProjectGetters } = createNames
 const ISSUES_COLUMNS = [
   { name: "title", displayAs: "Title" }, 
   { name: "description", displayAs: "Description" }, 
+  { name: "status", displayAs: "Status" }, 
   { name: "createdAt", displayAs: "Created At", dataFilter: displayDate }, 
   { name: "name", displayAs: "Reported By" }
 ];
@@ -97,10 +98,15 @@ export default {
     }
   },
   created() {
-    if(this.$route.params.projectId && this.currentProjectID == "") {
-      this.$store.dispatch('project/setCurrentProject', this.$route.params.projectId)
+    try {
+      if(this.$route.params.projectId && this.currentProjectID == "") {
+       this.$store.dispatch('project/setCurrentProject', this.$route.params.projectId)
+      }
+    } catch (e) {
+      console.log(e)
     }
   },
+    
   beforeDestroy() {
     this.$store.dispatch('project/setCurrentProject', '');
   }

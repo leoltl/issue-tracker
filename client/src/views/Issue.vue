@@ -1,6 +1,6 @@
 <template>
   <div class="ticket">
-    <section class="ticket-main">
+    <section class="ticket-main" v-if="currentIssue">
       <SubSection :title="'Issue ticket details'" class="sub-section-details">
         <DataList
           v-if="currentIssue"
@@ -92,7 +92,7 @@ export default {
       "userName"
     ]),
     issueData() {
-      return this.currentIssue;
+      return this.currentIssue || [];
     },
     issueRow() {
       return ISSUE_ROW;
@@ -125,12 +125,14 @@ export default {
       })
     },
   },
-  beforeCreate() {
+  created() {
     if(this.$route.params.issueId && !this.currentIssue) {
       this.$store.dispatch('issue/getIssueDetails', this.$route.params.issueId)
-      this.$store.dispatch('issue/getIssueHistory', this.$route.params.issueId)
-      this.$store.dispatch('issue/getAllIssueComments', this.$route.params.issueId)
     }
+  },
+  mounted() {
+    this.$store.dispatch('issue/getIssueHistory', this.$route.params.issueId)
+    this.$store.dispatch('issue/getAllIssueComments', this.$route.params.issueId)
   },
   beforeDestroy() {
     this.$store.dispatch('issue/getIssueDetails', '');

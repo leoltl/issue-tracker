@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction, Router, Error } from "express";
-import UserService from '../../services/Users/users.service';
-import { HTTP400Error } from '../../lib/httpErrors';
+import { HTTP403Error } from '../../lib/httpErrors';
 
 
 function authorize(roles: string | Array<string> = []) {
@@ -14,7 +13,7 @@ function authorize(roles: string | Array<string> = []) {
         next();
         return
       }
-      throw new HTTP400Error('Unauthorized Access.')
+      throw new HTTP403Error('Unauthorized Access.')
     }
   ]
 }

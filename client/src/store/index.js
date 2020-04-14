@@ -18,7 +18,11 @@ const store = new Vuex.Store({
   },
   actions: {
     pushRouter(_, path) {
-      router.push(path);
+      router.push(path)
+        .catch(e => { 
+          if (e.name == 'NavigationDuplicated') { return }
+          console.log(e)
+        })
     },
     goRouter(_, path) {
       router.go(path);

@@ -51,7 +51,7 @@
       handleSelectUser(rowNumber) {
         if (!this.selected.includes(rowNumber)) {
           this.selected.push(rowNumber);
-          this.form.members.push(this.users[rowNumber].usersUuid)
+          this.form.members.push(this.usersNotInCurrentProject[rowNumber].usersUuid)
         } else {
           this.selected = this.selected.filter(row => row != rowNumber)
           var userToRemove = this.users[rowNumber].usersUuid

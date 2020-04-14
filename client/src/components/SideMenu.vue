@@ -17,6 +17,15 @@
 
       <SideMenuItem>
         <template v-slot:icon>
+          <i class="el-icon-s-management"></i>
+        </template>
+        <router-link :to="{name:'MyIssue'}">
+          My Issues
+        </router-link>
+      </SideMenuItem>
+
+      <SideMenuItem>
+        <template v-slot:icon>
           <i class="el-icon-s-custom"></i>
         </template>
         <router-link :to="{name:'ManageRole'}">

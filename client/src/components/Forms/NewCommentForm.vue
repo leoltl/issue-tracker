@@ -28,13 +28,18 @@
     data() {
       return {
         form: {
-          body: []
+          body: ""
         }
       }
     },
     methods: {
       async handleSubmit(e, loaderCallback) {
         let formData = this.form
+        if (formData.body == "") {
+          console.log(formData.body, 'empyt')
+          loaderCallback && loaderCallback()
+          return 
+        }
         var callback = () => {
           loaderCallback()
           this.form = {}

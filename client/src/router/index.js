@@ -6,6 +6,7 @@ import Projects from '@/views/Projects.vue'
 import Project from '@/views/Project.vue'
 import Issue from '@/views/Issue.vue'
 import ManageRole from '@/views/ManageRole.vue'
+import MyIssue from '@/views/MyIssue.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 
 Vue.use(VueRouter)
@@ -35,6 +36,12 @@ const routes = [
     name: "Issue",
     meta: { restricted: true },
     component: Issue
+  },
+  {
+    path: '/my-issue',
+    name: "MyIssue",
+    meta: { restricted: true },
+    component: MyIssue
   },
   {
     path: '/manage-role',

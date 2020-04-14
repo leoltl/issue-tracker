@@ -87,6 +87,23 @@ class IssueController {
       next(e)
     }
   }
+
+  public getMyIssue = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    try {
+      // var date = Date.now()
+      const { id: userId } = await this.userService.findIdByUUID(user.usersUuid);
+      const [assigned, authored] = await Promise.all([
+        this.issueService.find({ assignedId: userId }, true), 
+        this.issueService.find({ authorId: userId }, true)]);
+      let results = [...assigned, ...authored];
+      // console.log('complete', Date.now() - date);
+      results = await Promise.all(results.map(issue => this.populateIssueDetails(issue)));
+      res.send(results);
+    } catch (e) {
+      next(e)
+    }
+  }
   
 
   public getHistory = async (req: Request, res: Response, next: NextFunction) => {
@@ -96,6 +113,10 @@ class IssueController {
       results = await Promise.all(results.map(({ newVal }) => this.populateIssueDetails(newVal)));
       res.send(results);
     } catch (e) {
+      if (e.message == 'Record not found') { 
+        res.send([])
+        return
+      }
       next(e)
     }    
   }
@@ -104,9 +125,13 @@ class IssueController {
     try {
       const { id: issueId } = await this.issueService.findIdByUUID(req.params.issueId);
       let results = await this.commentService.find({ issueId });
-      results = await Promise.all(results.map(comment => this.populateCommentDetilas(comment)));
+      results = await Promise.all(results.map(comment => this.populateCommentDetails(comment)));
       res.send(results);
     } catch(e) {
+      if (e.message == 'Record not found') { 
+        res.send([])
+        return
+      }
       next(e)
     }
   }
@@ -125,7 +150,7 @@ class IssueController {
     }
   }
 
-  private populateCommentDetilas = async (comment) => {
+  private populateCommentDetails = async (comment) => {
     const _comment = {...comment};
     _comment.authorId = await this.userService.findOne({ id: comment.authorId });
     return _comment;
@@ -134,15 +159,27 @@ class IssueController {
 
   private populateIssueDetails = async (issue) => {
     const _issue = {...issue}
-    _issue.projectId = await this.projectService.findOne({ id: issue.project_id || issue.projectId });
-    _issue.authorId = await this.userService.findOne({ id: issue.author_id || issue.authorId });
-    _issue.assignedId = _issue.assigned_id || issue.assignedId ? await this.userService.findOne({ id: issue.assigned_id || issue.assignedId }) : null;
-    _issue.updatedBy = _issue.updated_by || issue.updatedBy ? await this.userService.findOne({ id: issue.updated_by || issue.updatedBy }) : null;
+    // var date = Date.now() //benchmarking
+
+    // to optimize....zzz
+    const [projectId, authorId, assignedId, updatedBy] = await Promise.all([
+      this.projectService.findOne({ id: issue.project_id || issue.projectId }),
+      this.userService.findOne({ id: issue.author_id || issue.authorId }),
+      _issue.assigned_id || issue.assignedId ? this.userService.findOne({ id: issue.assigned_id || issue.assignedId }) : null,
+      _issue.updated_by || issue.updatedBy ? this.userService.findOne({ id: issue.updated_by || issue.updatedBy }) : null,
+    ])
+
+    _issue.projectId = projectId
+    _issue.authorId = authorId
+    _issue.assignedId = assignedId
+    _issue.updatedBy = updatedBy
+
     delete _issue.id;
     delete _issue.project_id;
     delete _issue.author_id;
     delete _issue.assigned_id;
     delete _issue.updated_by;
+    // console.log('complete', Date.now() - date);
     return _issue;
   }
 }

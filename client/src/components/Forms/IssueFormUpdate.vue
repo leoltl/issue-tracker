@@ -21,6 +21,7 @@
           projectId: this.form.projectId,
           assignedId: this.form.assignedId,
           authorId: this.form.authorId,
+          status: this.form.status
         }
 
         this.$store.dispatch('issue/updateIssue', { formData, issuesId, loaderCallback })

@@ -5,6 +5,7 @@
       <InputGeneric v-model="form.description" :label="'Description'" />
       <InputSelect v-model="form.projectId" :label="'Project'" :options="projectOptions"/>
       <InputSelect v-model="form.priority" :label="'Priority'" :options="priorityOptions"/>
+      <InputSelect v-if="isUpdate" v-model="form.status" :label="'Status'" :options="statusOptions"/>
       <InputSelect v-if="isUpdate" v-model="form.assignedId" :label="'Assign To'" :options="usersOptions"/>
     </div>
     <div class="actions">
@@ -31,6 +32,9 @@ export default {
   computed: {
     priorityOptions() {
       return ['low', 'medium', 'high', 'severe'];
+    },
+    statusOptions() {
+      return ['open', 'close'];
     },
     projectOptions() {
       return this.$store.getters['project/projectOptions']
