@@ -19,6 +19,8 @@ services:
       JWT_SECRET: coolstory
   postgres:
     image: postgres:10.12-alpine
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: leo
       POSTGRES_DB: issue
