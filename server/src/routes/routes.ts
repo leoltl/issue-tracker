@@ -7,6 +7,9 @@ import authorize from '../middlewares/authorization/authorize';
 import authenticate from '../middlewares/authentication/jwt';
 import roles from '../middlewares/authorization/roles';
 
+import { main } from '../lib/dbReset';
+import { resolve } from 'dns';
+
 const router = express.Router();
 router.get('/projects', ProjectController.getAll);
 router.post('/projects', authenticate, authorize([roles.admin, roles.productManager]),ProjectController.create);
@@ -34,5 +37,19 @@ router.post('/signin', UserController.signIn);
 router.post('/signout', UserController.signOut);
 router.get('/me', authenticate, UserController.getMe);
 router.get('/refresh-token', authenticate, UserController.refreshToken)
+
+router.get('/debug', (req, res, next) => {
+  try {
+    main();
+    res.sendStatus(200);
+  } catch(e) {
+    next(e)
+  }
+})
+
+router.get('/benchmark', (req, res, next) => {
+  const ctr = [IssueController.benchMarkgetMyIssue, IssueController.benchMarkget, IssueController.benchMarkgetAll]
+  return ctr[Math.floor(Math.random() * 2)](req, res, next);
+} )
 
 export default router;
