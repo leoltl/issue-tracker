@@ -166,7 +166,7 @@ INSERT INTO issues (title, description, project_id, assigned_id, author_id, upda
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('PM1 first issue', 'PM1 first issue recorded', 1, 6, 2, 2);
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('PM2 first issue', 'PM2 first issue recorded', 2, 2, 5, 5);
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Dev1 first issue', 'Dev1 first issue recorded', 1, 3, 4, 3);
-INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Dev2 first issue', 'Dev2 first issue recorded', 2, 1 5, 6);
+INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Dev2 first issue', 'Dev2 first issue recorded', 2, 1, 5, 6);
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Tester1 first issue', 'Tester1 first issue recorded', 1, 7, 4, 4);
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Tester2 first issue', 'Tester2 first issue recorded', 2, 5, 2, 7);
 
