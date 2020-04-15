@@ -88,6 +88,25 @@ class IssueController {
     }
   }
 
+  public benchMarkgetMyIssue = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    try {
+      // var date = Date.now()
+      // const { id: userId } = await this.userService.findIdByUUID(user.usersUuid);
+      const userId = Math.ceil(Math.random() * 5);
+      const [assigned, authored] = await Promise.all([
+        this.issueService.find({ assignedId: userId }, true), 
+        this.issueService.find({ authorId: userId }, true)]);
+      let results = [...assigned, ...authored];
+      // console.log('complete', Date.now() - date);
+      results = await Promise.all(results.map(issue => this.populateIssueDetails(issue)));
+      res.send(results);
+    } catch (e) {
+      next(e)
+    }
+  }
+  
+
   public getMyIssue = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
     try {

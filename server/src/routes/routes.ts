@@ -47,4 +47,6 @@ router.get('/debug', (req, res, next) => {
   }
 })
 
+router.get('/benchmark', IssueController.benchMarkgetMyIssue)
+
 export default router;
