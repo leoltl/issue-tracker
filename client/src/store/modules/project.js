@@ -1,4 +1,5 @@
-import API from '@/api'
+import API from '@/api';
+import { Message } from 'element-ui';
 
 const project = {
   namespaced: true,
@@ -56,6 +57,13 @@ const project = {
         await API.project.updateProjectMember(formData, projectId);
         this.dispatch('project/getProjectMember', projectId)
       } catch (e) {
+        if (e.response.status == 403) {
+          Message({
+            message: `You do not have permission to perform this action. Please contact admin.`,
+            type: 'warning',
+            showClose: true,
+          })
+        }
         console.log(e)
       } finally {
         callback && callback()
@@ -66,6 +74,13 @@ const project = {
         await API.project.deleteProjectMember(userId, projectId);
         commit('setProjectMembers', state.projectMembers.filter(user => user.usersUuid != userId ))
       } catch (e) {
+        if (e.response.status == 403) {
+          Message({
+            message: `You do not have permission to perform this action. Please contact admin.`,
+            type: 'warning',
+            showClose: true,
+          })
+        }
         console.log(e)
       }['user/allUsers']
     }

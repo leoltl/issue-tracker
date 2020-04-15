@@ -67,7 +67,9 @@ abstract class Model {
 
   protected async find(obj: any, displayProtectedFields: boolean=false) {
     var conditions = Object.entries(obj);
-    const whereClause = conditions.map(([columnName, condition]) => {
+    const whereClause = conditions
+    .map(([columnName, condition]) => [(this.columns[columnName]?.colName || columnName), condition])
+    .map(([columnName, condition]) => {
       if (Array.isArray(condition)) {
         return condition.map(condition => `${columnName} = ${condition}`).join(' OR ')
       }
@@ -100,18 +102,18 @@ abstract class Model {
     return this._stripProtectedFields(result)
   }
 
-  protected async findById(id: Number, displayProtectedFields: boolean=false): Promise<Array<any> | any> {
-    if (!id) throw new HTTP400Error("ID is not provided")
-    const result = await pool.query(`SELECT * FROM ${this.table} WHERE id = $1`, [id])
-    if (!result.length) throw new HTTP400Error("Record not found")
+  // protected async findById(id: Number, displayProtectedFields: boolean=false): Promise<Array<any> | any> {
+  //   if (!id) throw new HTTP400Error("ID is not provided")
+  //   const result = await pool.query(`SELECT * FROM ${this.table} WHERE id = $1`, [id])
+  //   if (!result.length) throw new HTTP400Error("Record not found")
 
-    if (displayProtectedFields) return result;
-    return this._stripProtectedFields(result)
-  }
+  //   if (displayProtectedFields) return result;
+  //   return this._stripProtectedFields(result)
+  // }
 
   protected async destroyById(id: Number): Promise<Array<any> | any> {
     if (!id) throw new HTTP400Error("ID is not provided")
-    await this.findById(id)
+    await this.find({ id })
     const result = await pool.query(`DELETE FROM ${this.table} WHERE id = $1`, [id])
     console.log('deleteByID return', result)
     if (result == 0) throw new HTTP400Error("Record not found")
@@ -121,7 +123,7 @@ abstract class Model {
     var conditions = Object.entries(obj);
     const whereClause = 
       conditions
-        .map(([columnName, condition]) => [(this.columns[columnName].colName || columnName), condition])
+        .map(([columnName, condition]) => [(this.columns[columnName]?.colName || columnName), condition])
         .map(([columnName, condition]) => {
           if (Array.isArray(condition)) {
             return condition.map(condition => `${columnName} = ${condition}`).join(' OR ')

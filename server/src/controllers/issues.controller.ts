@@ -1,20 +1,23 @@
 import IssueService from "../services/issues.service";
 import ProjectService from "../services/projects.service";
 import UserService from "../services/Users/users.service";
+import CommentService from "../services/comments.service";
 import { Request, Response, NextFunction, Router, Error } from "express";
 
 class IssueController {
   protected issueService;
   protected projectService;
   protected userService;
+  protected commentService
 
   constructor() {
     this.issueService = new IssueService()
     this.projectService = new ProjectService()
     this.userService = new UserService()
+    this.commentService = new CommentService()
   }
 
-  getAll = async (req: Request, res: Response, next: NextFunction) => {
+  public getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { projectId } = req.params
       const { id: dbID } = await this.projectService.findIdByUUID(projectId);
@@ -25,7 +28,7 @@ class IssueController {
     }
   }
 
-  get = async (req: Request, res: Response, next: NextFunction) => {
+  public get = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let result = await this.issueService.findOne({ 'issues_uuid': req.params.issueId }, true);
       result = await this.populateIssueDetails(result)
@@ -35,7 +38,7 @@ class IssueController {
     }
   }
 
-  create = async (req: Request, res: Response, next: NextFunction) => {
+  public create = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
     const issue = req.body.data;
     const projects_uuid = req.params.projectId;
@@ -56,7 +59,7 @@ class IssueController {
     } 
   }
 
-  update = async (req: Request, res: Response, next: NextFunction) => {
+  public update = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
     const issuesUuid = req.params.issueId
     const { projectId:  projects_uuid, 
@@ -84,31 +87,100 @@ class IssueController {
       next(e)
     }
   }
+
+  public getMyIssue = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    try {
+      // var date = Date.now()
+      const { id: userId } = await this.userService.findIdByUUID(user.usersUuid);
+      const [assigned, authored] = await Promise.all([
+        this.issueService.find({ assignedId: userId }, true), 
+        this.issueService.find({ authorId: userId }, true)]);
+      let results = [...assigned, ...authored];
+      // console.log('complete', Date.now() - date);
+      results = await Promise.all(results.map(issue => this.populateIssueDetails(issue)));
+      res.send(results);
+    } catch (e) {
+      next(e)
+    }
+  }
   
 
-  getHistory = async (req: Request, res: Response, next: NextFunction) => {
+  public getHistory = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const issueUuid = req.params.issueId
       let results = await this.issueService.findHistory({ 'record_uuid': issueUuid });
       results = await Promise.all(results.map(({ newVal }) => this.populateIssueDetails(newVal)));
       res.send(results);
     } catch (e) {
+      if (e.message == 'Record not found') { 
+        res.send([])
+        return
+      }
       next(e)
     }    
   }
 
-  populateIssueDetails = async (issue) => {
+  public getComments = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id: issueId } = await this.issueService.findIdByUUID(req.params.issueId);
+      let results = await this.commentService.find({ issueId });
+      results = await Promise.all(results.map(comment => this.populateCommentDetails(comment)));
+      res.send(results);
+    } catch(e) {
+      if (e.message == 'Record not found') { 
+        res.send([])
+        return
+      }
+      next(e)
+    }
+  }
+
+  public createComment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+      const user = req.user;
+      const [{ id: issueId },{ id: authorId }] = await Promise.all([
+          this.issueService.findIdByUUID(req.params.issueId),
+          this.userService.findIdByUUID(req.user.usersUuid),
+        ]);
+      const [result] = await this.commentService.create({ ...req.body.data, authorId, issueId })
+      res.send(result)
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  private populateCommentDetails = async (comment) => {
+    const _comment = {...comment};
+    _comment.authorId = await this.userService.findOne({ id: comment.authorId });
+    return _comment;
+  }
+  
+
+  private populateIssueDetails = async (issue) => {
     const _issue = {...issue}
-    _issue.projectId = await this.projectService.findOne({ id: issue.project_id || issue.projectId });
-    _issue.authorId = await this.userService.findOne({ id: issue.author_id || issue.authorId });
-    _issue.assignedId = _issue.assigned_id || issue.assignedId ? await this.userService.findOne({ id: issue.assigned_id || issue.assignedId }) : null
-    _issue.updatedBy = _issue.updated_by || issue.updatedBy ? await this.userService.findOne({ id: issue.updated_by || issue.updatedBy }) : null
-    delete _issue.id
-    delete _issue.project_id
-    delete _issue.author_id
-    delete _issue.assigned_id
-    delete _issue.updated_by
-    return _issue
+    // var date = Date.now() //benchmarking
+
+    // to optimize....zzz
+    const [projectId, authorId, assignedId, updatedBy] = await Promise.all([
+      this.projectService.findOne({ id: issue.project_id || issue.projectId }),
+      this.userService.findOne({ id: issue.author_id || issue.authorId }),
+      _issue.assigned_id || issue.assignedId ? this.userService.findOne({ id: issue.assigned_id || issue.assignedId }) : null,
+      _issue.updated_by || issue.updatedBy ? this.userService.findOne({ id: issue.updated_by || issue.updatedBy }) : null,
+    ])
+
+    _issue.projectId = projectId
+    _issue.authorId = authorId
+    _issue.assignedId = assignedId
+    _issue.updatedBy = updatedBy
+
+    delete _issue.id;
+    delete _issue.project_id;
+    delete _issue.author_id;
+    delete _issue.assigned_id;
+    delete _issue.updated_by;
+    // console.log('complete', Date.now() - date);
+    return _issue;
   }
 }
 

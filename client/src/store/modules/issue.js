@@ -7,6 +7,8 @@ const issue = {
     issues: [],
     currentIssue: null,
     currentIssueHistory: [],
+    currentIssueComments: [],
+    myIssues: [],
   },
   getters: {
     issueData(state) {
@@ -27,11 +29,25 @@ const issue = {
     setCurrentIssueHistory(state, issueHistory) {
       state.currentIssueHistory = issueHistory
     },
+    setCurrentIssueComments(state, issueComments) {
+      state.currentIssueComments = issueComments;
+    },
+    addComment(state, comment) {
+      state.currentIssueComments = [...state.currentIssueComments, comment]
+    },
+    setMyIssue(state, myIssues) {
+      state.myIssues = myIssues
+    }
   },
   actions: {
     async getAllIssues({ commit }, projectId) {
-      const { data } = await API.issue.getIssuesForProject(projectId);
-      commit('setIssues', data);
+      try {
+        const { data } = await API.issue.getIssuesForProject(projectId);
+        commit('setIssues', data);
+      } catch (e) {
+        console.log(e)
+      }
+      
     },
     async getIssueDetails({ commit }, ticketId) {
       try {
@@ -49,7 +65,6 @@ const issue = {
       }
     },
     async getIssueHistory({ commit }, ticketId) {
-      console.log('called', ticketId)
       try {
         if (ticketId == "") { 
           commit('setCurrentIssueHistory', []) 
@@ -80,6 +95,31 @@ const issue = {
         console.log(e)
       } finally {
         loaderCallback && loaderCallback()
+      }
+    },
+    async getAllIssueComments({ commit }, ticketId) {
+      try {
+        const { data } = await API.issue.getIssueComments(ticketId); 
+        commit('setCurrentIssueComments', data);
+      } catch (e) {
+        commit('setCurrentIssueComments', []);
+      }
+    },
+    async createComment({ commit }, { issueId: ticketId, formData, callback}) {
+      try {
+        const { data } = await API.issue.createComment(formData, ticketId);
+        commit('addComment', data);
+        callback && callback();
+      } catch(e) {
+        console.log(e)
+      }
+    },
+    async getMyIssues({ commit }) {
+      try {
+        const { data } = await API.issue.getMyIssues();
+        commit('setMyIssue', data);
+      } catch (e) {
+        console.log(e)
       }
     }
   }

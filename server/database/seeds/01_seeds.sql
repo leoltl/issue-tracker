@@ -28,3 +28,12 @@ INSERT INTO issues (title, description, project_id, assigned_id, author_id, upda
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Dev2 first issue', 'Dev2 first issue recorded', 2, 6, 6, 6);
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Tester1 first issue', 'Tester1 first issue recorded', 1, 2, 4, 4);
 INSERT INTO issues (title, description, project_id, assigned_id, author_id, updated_by) VALUES ('Tester2 first issue', 'Tester2 first issue recorded', 2, 5, 7, 7);
+
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 1 from user 1', 1, 1);
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 1 from user 2', 1, 2);
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 2 from user 1', 1, 1);
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 2 from user 2', 1, 2);
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 1 from user 1', 2, 1);
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 1 from user 2', 2, 2);
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 2 from user 1', 2, 1);
+INSERT INTO comments (body, issue_id, author_id) VALUES ('comment 2 from user 2', 2, 2);

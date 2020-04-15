@@ -12,7 +12,7 @@ interface issue {
   priority: String,
 }
 class Issue extends IssueModel {
-  constructor(project: issue=null) {
+  constructor() {
     super();
   }
 
@@ -43,10 +43,6 @@ class Issue extends IssueModel {
 
   public async findAll() {
     return super.findAll();
-  }
-
-  public async findById(issueId: number) {
-    return super.findById(issueId);
   }
 
   public async findHistory(obj) {

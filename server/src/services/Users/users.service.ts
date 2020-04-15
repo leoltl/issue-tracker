@@ -66,16 +66,8 @@ class UserService extends UserModel {
     return super.findAll();
   }
 
-  public async findById(userId: number) {
-    return super.findById(userId);
-  }
-
   public async findIdByUUID(uuid) {
     return super.findIdByUUID(uuid);
-  }
-
-  public async findByUsername(username: string) {
-    return super.findByUsername(username);
   }
 
   public async find(obj, displayProtectedFields: boolean=false) {

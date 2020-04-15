@@ -1,18 +1,27 @@
 const issue = (axios) => ({
   async getIssuesForProject(projectId) {
-    return await axios.get(`/projects/${projectId}/issues`)
+    return await axios.get(`/projects/${projectId}/issues`);
   },
   async getIssue(issueId) {
-    return await axios.get(`/issues/${issueId}`)
+    return await axios.get(`/issues/${issueId}`);
   },
   async getIssueHistory(issueId) {
-    return await axios.get(`/issues/${issueId}/history`)
+    return await axios.get(`/issues/${issueId}/history`);
   },
   async createIssue(formData, projectId) {
-    return await axios.post(`/projects/${projectId}/issues`, { data: formData })
+    return await axios.post(`/projects/${projectId}/issues`, { data: formData });
   },
   async updateIssue(formData, issueId) {
-    return await axios.put(`/issues/${issueId}`, { data: formData })
+    return await axios.put(`/issues/${issueId}`, { data: formData });
+  },
+  async getIssueComments(issueId) {
+    return await axios.get(`/issues/${issueId}/comments`);
+  },
+  async createComment(formData, issueId) {
+    return await axios.post(`/issues/${issueId}/comments`, { data: formData });
+  },
+  async getMyIssues() {
+    return await axios.get(`/issues/me`);
   }
 })
 

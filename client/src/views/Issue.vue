@@ -1,6 +1,6 @@
 <template>
   <div class="ticket">
-    <section class="ticket-main">
+    <section class="ticket-main" v-if="currentIssue">
       <SubSection :title="'Issue ticket details'" class="sub-section-details">
         <DataList
           v-if="currentIssue"
@@ -11,9 +11,20 @@
           <CustomButton @click="handleEdit">Edit</CustomButton>
         </div>
       </SubSection>
-      <SubSection :title="'Issue ticket comments'" class="sub-section-comment">
+      <SubSection :title="'Ticket comments'" class="sub-section-comment">
+        <div class="comment-list">
+          <CommentRow
+            v-for="comment of currentIssueComments"
+            :comment="comment"
+            :key="comment.commentsUuid"
+            :currentUser="userName"
+          />
+        </div>
+        <NewCommentForm 
+          :issueId="currentIssue.issuesUuid"
+        />
       </SubSection>
-      <SubSection :title="'Issue ticket history'" class="sub-section-history">
+      <SubSection :title="'Issue history'" class="sub-section-history">
         <DataTable 
           v-if="currentIssueHistory.length"
           :data="currentIssueHistory" 
@@ -29,16 +40,20 @@
 
 
 <script>
-import { displayDate, displayStatus, displayPriority } from '@/filters';
-import { createNamespacedHelpers } from 'vuex';
 import CustomButton from '@/components/Button';
 import SubSection from '@/components/SubSection';
 import DataList from '@/components/DataList';
 import DataTable from '@/components/DataTable';
+import CommentRow from '@/components/CommentRow';
 import UpdateIssueForm from '@/components/Forms/IssueFormUpdate';
+import NewCommentForm from '@/components/Forms/NewCommentForm';
 import ModalBus from '@/Bus';
+import { displayDate, displayStatus, displayPriority } from '@/filters';
 
+import { createNamespacedHelpers } from 'vuex';
 const { mapState } = createNamespacedHelpers('issue')
+const { mapGetters: mapAuthGetters } = createNamespacedHelpers('auth')
+
 const ISSUE_ROW = [
   { name: "title", displayAs: "Title" }, 
   { name: "description", displayAs: "Description" }, 
@@ -62,16 +77,22 @@ export default {
     DataList,
     DataTable,
     CustomButton,
+    CommentRow,
+    NewCommentForm,
     // eslint-disable-next-line vue/no-unused-components
     UpdateIssueForm,
   },
   computed: {
     ...mapState([
       "currentIssue",
-      "currentIssueHistory"
+      "currentIssueHistory",
+      "currentIssueComments"
+    ]),
+    ...mapAuthGetters([
+      "userName"
     ]),
     issueData() {
-      return this.currentIssue;
+      return this.currentIssue || [];
     },
     issueRow() {
       return ISSUE_ROW;
@@ -89,7 +110,7 @@ export default {
             data: snapShot,
             rows: ISSUE_ROW
           }
-      })
+        })
       }
       return [
         { name: "Details" , displayAs: " ", action: showHistory.bind(this) },
@@ -104,11 +125,14 @@ export default {
       })
     },
   },
-  beforeCreate() {
+  created() {
     if(this.$route.params.issueId && !this.currentIssue) {
       this.$store.dispatch('issue/getIssueDetails', this.$route.params.issueId)
-      this.$store.dispatch('issue/getIssueHistory', this.$route.params.issueId)
     }
+  },
+  mounted() {
+    this.$store.dispatch('issue/getIssueHistory', this.$route.params.issueId)
+    this.$store.dispatch('issue/getAllIssueComments', this.$route.params.issueId)
   },
   beforeDestroy() {
     this.$store.dispatch('issue/getIssueDetails', '');
@@ -135,6 +159,10 @@ export default {
   }
   .sub-section-comment {
     grid-area: comment;
+    .comment-list {
+      max-height: 300px;
+      overflow-y: scroll;
+    }
   }
   .sub-section-history {
     grid-area: history;

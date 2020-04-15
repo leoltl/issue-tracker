@@ -69,7 +69,7 @@ class Issue extends Model {
     super({ table: "issues", columns })
   }
 
-  protected async create(issue: issue) {
+  protected async create(issue: issue): Promise<issue> {
     try {
       this.validate(issue, ["title", "description", "authorId", "projectId"])
       //TODO: check valid issue author
@@ -85,7 +85,7 @@ class Issue extends Model {
     }
   }
 
-  protected async update(issue: issue, id) {
+  protected async update(issue: issue, id): Promise<issue> {
     try {
       this.validate(issue, ["title", "description", "authorId", "projectId"])
       var [ columns, values, params ] = this.parseColumnForCreateUpdate(issue);
@@ -101,7 +101,7 @@ class Issue extends Model {
     }
   }
 
-  protected async findAllByProjectId(projectId: number) {
+  protected async findAllByProjectId(projectId: number): Promise<Array<issue>> {
     const result = await this.pool.query(`
       SELECT * from ${this.table} 
       JOIN users ON ${this.table}.author_id = users.id 
