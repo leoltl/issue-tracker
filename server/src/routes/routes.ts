@@ -47,6 +47,9 @@ router.get('/debug', (req, res, next) => {
   }
 })
 
-router.get('/benchmark', IssueController.benchMarkgetMyIssue)
+router.get('/benchmark', (req, res, next) => {
+  const ctr = [IssueController.benchMarkgetMyIssue, IssueController.benchMarkget, IssueController.benchMarkgetAll]
+  return ctr[Math.floor(Math.random() * 2)](req, res, next);
+} )
 
 export default router;

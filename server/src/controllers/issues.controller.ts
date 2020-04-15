@@ -88,12 +88,38 @@ class IssueController {
     }
   }
 
+  public benchMarkgetAll = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const projectId = Math.ceil(Math.random() * 1);
+      const [{ id: dbID }] = await this.projectService.find({id: projectId});
+      console.log('querying getAll projectId:', projectId)
+      const result = await this.issueService.findAllByProjectId(dbID);
+      res.send(result);
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  public benchMarkget = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const issueId = Math.ceil(Math.random() * 31);
+      let result = await this.issueService.findOne({ id: issueId }, true);
+      console.log('querying get issueId:', issueId)
+      result = await this.populateIssueDetails(result)
+      res.send(result);
+    } catch (e) {
+      next(e)
+    }
+  }
+
   public benchMarkgetMyIssue = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
     try {
       // var date = Date.now()
       // const { id: userId } = await this.userService.findIdByUUID(user.usersUuid);
-      const userId = Math.ceil(Math.random() * 5);
+      const userId = Math.ceil(Math.random() * 7);
+      const [user] = await this.userService.find({ id: userId })
+      console.log('querying getMyIssue user:', userId, user.name)
       const [assigned, authored] = await Promise.all([
         this.issueService.find({ assignedId: userId }, true), 
         this.issueService.find({ authorId: userId }, true)]);
