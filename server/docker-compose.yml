@@ -1,5 +1,13 @@
 version: '3'
 services:
+  postgres:
+    image: postgres
+    volumes:
+      - dbdata:/var/lib/postgres/data
+    ports:
+      - 5432:5432/tcp
+    environment:
+      POSTGRES_PASSWORD: 123
   web:
     build: .
     command: npm run dev
@@ -12,18 +20,10 @@ services:
       - postgres
     environment:
       DB_HOST: postgres
-      DB_USER: leo
-      DB_NAME: issue
+      DB_USER: 'postgres'
+      DB_NAME: 'postgres'
       DB_PASS: 123
       DB_PORT: 5432
       JWT_SECRET: coolstory
-  postgres:
-    image: postgres:10.12-alpine
-    volumes:
-      - ./dbdata:/var/lib/postgres/data
-    ports:
-      - 5432:5432/tcp
-    environment:
-      POSTGRES_USER: leo
-      POSTGRES_DB: issue
-      POSTGRES_PASSWORD: 123
+volumes:
+  dbdata:
