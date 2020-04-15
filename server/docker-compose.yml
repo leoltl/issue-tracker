@@ -12,7 +12,7 @@ services:
     build: .
     command: npm run dev
     volumes:
-      - appdata:/usr/app
+      - .:/usr/app
       - /usr/app/node_modules
     ports:
       - "3000:3000"
@@ -27,4 +27,3 @@ services:
       JWT_SECRET: coolstory
 volumes:
   dbdata:
-  appdata:
