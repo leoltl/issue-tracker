@@ -115,12 +115,11 @@ export default {
 
 <style lang="scss" scoped>
   .project-main {
-    height: calc(100vh - 5vh - 105px);;
+    height: calc(100% - 5vh - 105px);
     background-color: #eee;
     padding: 2vh 2.5vw;
     display: grid;
     grid-template: "tickets info";
-    grid-template-columns: 65% auto;
     grid-gap: 2vw;
     .right-col {
       grid-area: info;
@@ -147,6 +146,7 @@ export default {
       grid-template-rows: 65% auto;
       padding: 2vh 3vw;
       height: 150%;
+      
     }
   }
 </style>
