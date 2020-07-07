@@ -54,7 +54,6 @@ export default {
 
 <style lang="scss" scoped>
   .projects {
-    height: 100%;
     background-color: #eee;
   }
 </style>
